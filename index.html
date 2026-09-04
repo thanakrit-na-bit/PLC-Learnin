@@ -3,40 +3,31 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>เครื่องคิดเลขฐานสอง</title>
+    <title>ระบบคำนวณเลขฐาน</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Noto+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <main class="calculator" aria-label="เครื่องคิดเลขฐานสอง">
-      <header>
-        <p class="eyebrow">BINARY CALCULATOR</p>
-        <h1>เครื่องคิดเลขฐานสอง</h1>
-        <p class="subtitle">คำนวณด้วยเลข 0 และ 1 พร้อมแสดงผลลัพธ์เป็นเลขฐานสิบ</p>
+    <main class="page-shell">
+      <header class="hero">
+        <p class="badge">✧ INTERACTIVE BASE ARITHMETIC SYSTEM</p>
+        <h1>เรียนรู้และคำนวณ <span>การบวกเลขฐาน</span><br />อย่างลึกซึ้ง</h1>
+        <p>ระบบคำนวณและแสดงขั้นตอนการบวกเลขฐานแบบละเอียด เห็นทุกจังหวะของการส่งตัวทด (Carry)<br />เหมาะสำหรับการศึกษา วิศวกรรม ระบบควบคุมอัตโนมัติ และ PLC</p>
+        <nav class="tabs" aria-label="เมนู"><button class="active">▣ เครื่องคำนวณ &amp; วิธีทำ</button><button disabled>▤ แบบฝึกหัด (Quiz)</button><button disabled>▱ ตารางเทียบเลขฐาน</button></nav>
       </header>
-
-      <section class="display" aria-live="polite">
-        <div id="expression" class="expression">0</div>
-        <div id="result" class="result">0<small>₂</small></div>
-        <div id="decimal" class="decimal">ฐานสิบ: 0</div>
+      <section class="panel calculator-panel">
+        <div class="panel-heading"><div class="icon">▦</div><div><h2>เครื่องคำนวณการบวกเลขฐาน <span>(Base Addition)</span></h2><p>คำนวณการบวกเลขฐานพร้อมแสดงการกระจายตัวทด (Carry) และวิธีคิดแบบละเอียด</p></div><div class="examples"><b>✨ ตัวอย่างโจทย์:</b><button data-example="1011,1101,2">1011 + 1101 (ฐาน 2)</button><button data-example="75,26,8">75 + 26 (ฐาน 8)</button><button data-example="1A,2F,16">1A + 2F (ฐาน 16)</button></div></div>
+        <div class="divider"></div><p class="field-title">เลือกฐานของตัวเลข (RADIX / BASE):</p>
+        <div class="base-options" role="radiogroup" aria-label="เลือกฐาน">
+          <button class="base-card selected" data-base="2"><span>BIN</span><b>ฐาน</b><small>ใช้ได้: 0, 1</small><em>ฐาน 2</em></button><button class="base-card" data-base="8"><span>OCT</span><b>ฐาน</b><small>ใช้ได้: 0–7</small><em>ฐาน 8</em></button><button class="base-card" data-base="10"><span>DEC</span><b>ฐาน</b><small>ใช้ได้: 0–9</small><em>ฐาน 10</em></button><button class="base-card" data-base="16"><span>HEX</span><b>ฐาน</b><small>ใช้ได้: 0–9, A–F</small><em>ฐาน 16</em></button><label class="base-card custom"><span>CUSTOM</span><b>กำหนดฐานเอง</b><input id="custom-base" type="number" min="2" max="36" value="5" aria-label="ฐานกำหนดเอง" /><small>(2–36)</small></label>
+        </div>
+        <div class="divider"></div>
+        <div class="inputs"><label><span class="label a">● ตัวตั้ง (OPERAND A):</span><input id="operand-a" value="1011" autocomplete="off" spellcheck="false" /><small id="base-a">ฐาน 2</small></label><label><span class="label b">● ตัวบวก (OPERAND B):</span><input id="operand-b" value="1101" autocomplete="off" spellcheck="false" /><small id="base-b">ฐาน 2</small></label></div>
+        <div class="actions"><span id="validation">อักขระที่ใช้ได้ในฐาน 2: <b>0 – 1</b></span><div><button id="swap">⇄ สลับ A ↔ B</button><button id="clear">↻ ล้างข้อมูล</button><button id="calculate" class="primary">คำนวณผลลัพธ์</button></div></div>
       </section>
-
-      <section class="keys" aria-label="ปุ่มเครื่องคิดเลข">
-        <button class="key function" data-action="clear">AC</button>
-        <button class="key function" data-action="backspace" aria-label="ลบตัวสุดท้าย">⌫</button>
-        <button class="key operator" data-value="/">÷</button>
-        <button class="key operator" data-value="*">×</button>
-        <button class="key digit" data-value="1">1</button>
-        <button class="key digit" data-value="0">0</button>
-        <button class="key operator" data-value="-">−</button>
-        <button class="key operator" data-value="+">+</button>
-        <button class="key equals" data-action="equals">=</button>
-      </section>
-
-      <p class="hint">รองรับ: บวก ลบ คูณ หาร · กด Enter เพื่อคำนวณ · Esc เพื่อล้าง</p>
-    </main>
-    <script src="script.js"></script>
+      <section class="panel result-panel" aria-live="polite"><p class="result-label">ผลลัพธ์การบวกเลขฐาน <span>(ADDITION RESULT)</span></p><div class="answer"><span id="result">11000</span><small id="result-base">ฐาน 2</small></div><p id="decimal-result">= 24 ในฐานสิบ</p><div class="steps"><h3>วิธีคิดทีละหลัก <span>(CARRY STEPS)</span></h3><div id="step-list"></div></div></section>
+    </main><script src="script.js"></script>
   </body>
 </html>

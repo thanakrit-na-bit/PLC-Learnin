@@ -1,89 +1,34 @@
-const expressionEl = document.querySelector('#expression');
-const resultEl = document.querySelector('#result');
-const decimalEl = document.querySelector('#decimal');
-let expression = '';
-let justCalculated = false;
-
-const operatorSymbols = { '+': '+', '-': '−', '*': '×', '/': '÷' };
-const isOperator = (value) => Object.hasOwn(operatorSymbols, value);
-
-function formattedExpression(value) {
-  return value.replace(/[+\-*/]/g, (char) => ` ${operatorSymbols[char]} `);
+const digits = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+const els = { a: document.querySelector('#operand-a'), b: document.querySelector('#operand-b'), custom: document.querySelector('#custom-base'), result: document.querySelector('#result'), resultBase: document.querySelector('#result-base'), decimal: document.querySelector('#decimal-result'), validation: document.querySelector('#validation'), steps: document.querySelector('#step-list') };
+let base = 2;
+const valueOf = (char) => digits.indexOf(char);
+function valid(value) { return value && [...value.toUpperCase()].every((char) => valueOf(char) >= 0 && valueOf(char) < base); }
+function toDecimal(value) { return [...value.toUpperCase()].reduce((total, char) => total * BigInt(base) + BigInt(valueOf(char)), 0n); }
+function fromDecimal(value) { if (value === 0n) return '0'; let output = ''; while (value > 0n) { output = digits[Number(value % BigInt(base))] + output; value /= BigInt(base); } return output; }
+function baseLabel() { return `ฐาน ${base}`; }
+function renderSteps(a, b) {
+  const max = Math.max(a.length, b.length); let carry = 0; const rows = [];
+  for (let index = 0; index < max; index += 1) {
+    const aDigit = valueOf(a.at(-(index + 1))) || 0; const bDigit = valueOf(b.at(-(index + 1))) || 0;
+    const total = aDigit + bDigit + carry; const resultDigit = total % base; const nextCarry = Math.floor(total / base);
+    rows.unshift(`<div class="step"><span>หลักที่ ${max - index}</span><b>${digits[aDigit]} + ${digits[bDigit]}${carry ? ` + ${carry}` : ''} = ${digits[resultDigit]}</b><span class="carry">${nextCarry ? `ทด ${nextCarry} ไปหลักถัดไป` : 'ไม่มีตัวทด'}</span></div>`); carry = nextCarry;
+  }
+  els.steps.innerHTML = rows.join('');
 }
-
-function binaryToDecimal(binary) {
-  return BigInt(`0b${binary}`);
-}
-
 function calculate() {
-  if (!expression || isOperator(expression.at(-1))) return;
-  try {
-    // A leading minus can occur when a previous calculation produced a negative value.
-    const match = expression.match(/^(-?[01]+)((?:[+*/-][01]+)*)$/);
-    if (!match) throw new Error('invalid expression');
-    let value = binaryToDecimal(match[1].replace('-', ''));
-    if (match[1].startsWith('-')) value = -value;
-    const operations = match[2].matchAll(/([+*/-])([01]+)/g);
-    for (const [, operator, digits] of operations) {
-      const next = binaryToDecimal(digits);
-      if (operator === '+') value += next;
-      if (operator === '-') value -= next;
-      if (operator === '*') value *= next;
-      if (operator === '/') {
-        if (next === 0n) throw new Error('division by zero');
-        value /= next;
-      }
-    }
-    const negative = value < 0n;
-    const binary = `${negative ? '-' : ''}${(negative ? -value : value).toString(2)}`;
-    resultEl.innerHTML = `${binary}<small>₂</small>`;
-    decimalEl.textContent = `ฐานสิบ: ${value.toString(10)}`;
-    expressionEl.textContent = `${formattedExpression(expression)} =`;
-    expression = binary;
-    justCalculated = true;
-  } catch {
-    resultEl.textContent = 'Error';
-    decimalEl.textContent = 'ตรวจสอบรูปแบบการคำนวณ';
-    justCalculated = true;
-  }
+  const a = els.a.value.trim().toUpperCase(); const b = els.b.value.trim().toUpperCase(); els.a.value = a; els.b.value = b;
+  if (!valid(a) || !valid(b)) { els.result.textContent = 'Error'; els.decimal.textContent = `กรอกอักขระให้ถูกต้องสำหรับ${baseLabel()}`; els.steps.innerHTML = ''; return; }
+  const answer = toDecimal(a) + toDecimal(b); els.result.textContent = fromDecimal(answer); els.resultBase.textContent = baseLabel(); els.decimal.textContent = `= ${answer.toString()} ในฐานสิบ`; renderSteps(a, b);
 }
-
-function update() {
-  expressionEl.textContent = expression ? formattedExpression(expression) : '0';
-  if (!justCalculated) {
-    const current = expression.split(/[+\-*/]/).filter(Boolean).at(-1) || '0';
-    resultEl.innerHTML = `${current}<small>₂</small>`;
-    try { decimalEl.textContent = `ฐานสิบ: ${binaryToDecimal(current)}`; } catch { decimalEl.textContent = 'ฐานสิบ: —'; }
-  }
+function updateBase(nextBase) {
+  base = nextBase; document.querySelectorAll('.base-card[data-base]').forEach((card) => card.classList.toggle('selected', Number(card.dataset.base) === base));
+  els.validation.innerHTML = `อักขระที่ใช้ได้ใน${baseLabel()}: <b>0 – ${digits[base - 1]}</b>`; document.querySelectorAll('#base-a, #base-b').forEach((el) => { el.textContent = baseLabel(); }); calculate();
 }
-
-function input(value) {
-  if (value === 'clear') { expression = ''; justCalculated = false; update(); return; }
-  if (value === 'backspace') { expression = expression.slice(0, -1); justCalculated = false; update(); return; }
-  if (value === 'equals') { calculate(); return; }
-  if (isOperator(value)) {
-    if (!expression) return;
-    expression = isOperator(expression.at(-1)) ? `${expression.slice(0, -1)}${value}` : `${expression}${value}`;
-    justCalculated = false;
-  } else {
-    if (justCalculated) expression = '';
-    expression += value;
-    justCalculated = false;
-  }
-  update();
-}
-
-document.querySelector('.keys').addEventListener('click', (event) => {
-  const button = event.target.closest('button');
-  if (button) input(button.dataset.action || button.dataset.value);
-});
-
-window.addEventListener('keydown', (event) => {
-  const key = event.key;
-  if (key === 'Enter' || key === '=') { event.preventDefault(); input('equals'); }
-  else if (key === 'Escape') input('clear');
-  else if (key === 'Backspace') input('backspace');
-  else if (['0', '1', '+', '-', '*', '/'].includes(key)) input(key);
-});
-
-update();
+document.querySelectorAll('.base-card[data-base]').forEach((card) => card.addEventListener('click', () => updateBase(Number(card.dataset.base))));
+els.custom.addEventListener('input', () => { const value = Number(els.custom.value); if (value >= 2 && value <= 36) { base = value; document.querySelectorAll('.base-card').forEach((card) => card.classList.remove('selected')); els.validation.innerHTML = `อักขระที่ใช้ได้ใน${baseLabel()}: <b>0 – ${digits[base - 1]}</b>`; document.querySelectorAll('#base-a, #base-b').forEach((el) => { el.textContent = baseLabel(); }); calculate(); } });
+document.querySelector('#calculate').addEventListener('click', calculate);
+document.querySelector('#clear').addEventListener('click', () => { els.a.value = ''; els.b.value = ''; calculate(); });
+document.querySelector('#swap').addEventListener('click', () => { [els.a.value, els.b.value] = [els.b.value, els.a.value]; calculate(); });
+document.querySelectorAll('.examples button').forEach((button) => button.addEventListener('click', () => { const [a, b, nextBase] = button.dataset.example.split(','); els.a.value = a; els.b.value = b; updateBase(Number(nextBase)); }));
+[els.a, els.b].forEach((input) => input.addEventListener('keydown', (event) => { if (event.key === 'Enter') calculate(); }));
+calculate();
