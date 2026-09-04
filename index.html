@@ -3,31 +3,255 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ระบบคำนวณเลขฐาน</title>
+    <title>ระบบคำนวณเลขฐาน · BASE ADDER</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Noto+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Noto+Sans+Thai:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <main class="page-shell">
-      <header class="hero">
-        <p class="badge">✧ INTERACTIVE BASE ARITHMETIC SYSTEM</p>
-        <h1>เรียนรู้และคำนวณ <span>การบวกเลขฐาน</span><br />อย่างลึกซึ้ง</h1>
-        <p>ระบบคำนวณและแสดงขั้นตอนการบวกเลขฐานแบบละเอียด เห็นทุกจังหวะของการส่งตัวทด (Carry)<br />เหมาะสำหรับการศึกษา วิศวกรรม ระบบควบคุมอัตโนมัติ และ PLC</p>
-        <nav class="tabs" aria-label="เมนู"><button class="active">▣ เครื่องคำนวณ &amp; วิธีทำ</button><button disabled>▤ แบบฝึกหัด (Quiz)</button><button disabled>▱ ตารางเทียบเลขฐาน</button></nav>
-      </header>
-      <section class="panel calculator-panel">
-        <div class="panel-heading"><div class="icon">▦</div><div><h2>เครื่องคำนวณการบวกเลขฐาน <span>(Base Addition)</span></h2><p>คำนวณการบวกเลขฐานพร้อมแสดงการกระจายตัวทด (Carry) และวิธีคิดแบบละเอียด</p></div><div class="examples"><b>✨ ตัวอย่างโจทย์:</b><button data-example="1011,1101,2">1011 + 1101 (ฐาน 2)</button><button data-example="75,26,8">75 + 26 (ฐาน 8)</button><button data-example="1A,2F,16">1A + 2F (ฐาน 16)</button></div></div>
-        <div class="divider"></div><p class="field-title">เลือกฐานของตัวเลข (RADIX / BASE):</p>
-        <div class="base-options" role="radiogroup" aria-label="เลือกฐาน">
-          <button class="base-card selected" data-base="2"><span>BIN</span><b>ฐาน</b><small>ใช้ได้: 0, 1</small><em>ฐาน 2</em></button><button class="base-card" data-base="8"><span>OCT</span><b>ฐาน</b><small>ใช้ได้: 0–7</small><em>ฐาน 8</em></button><button class="base-card" data-base="10"><span>DEC</span><b>ฐาน</b><small>ใช้ได้: 0–9</small><em>ฐาน 10</em></button><button class="base-card" data-base="16"><span>HEX</span><b>ฐาน</b><small>ใช้ได้: 0–9, A–F</small><em>ฐาน 16</em></button><label class="base-card custom"><span>CUSTOM</span><b>กำหนดฐานเอง</b><input id="custom-base" type="number" min="2" max="36" value="5" aria-label="ฐานกำหนดเอง" /><small>(2–36)</small></label>
+    <div class="page-marks" aria-hidden="true">
+      <i class="pm tl"></i><i class="pm tr"></i><i class="pm bl"></i><i class="pm br"></i>
+    </div>
+
+    <main class="blueprint-shell">
+      <!-- ▐▐▐ TITLE BLOCK ▐▐▐ -->
+      <header class="title-block">
+        <p class="tb-code">DWG · TSC-072 · BASE-ADDER</p>
+        <div class="tb-main">
+          <div class="tb-title">
+            <h1>ระบบคำนวณเลขฐาน<span>การบวกเลขฐาน &amp; วิธีคิดตัวทด</span></h1>
+            <p>แสดงทุกจังหวะของการส่งตัวทด (Carry) แบบละเอียด เห็นกระบวนการคำนวณจริง — เหมาะสำหรับการศึกษา วิศวกรรม ระบบควบคุมอัตโนมัติ และ PLC</p>
+          </div>
+          <dl class="tb-stamps">
+            <div><dt>SCALE</dt><dd>1 : 1</dd></div>
+            <div><dt>REV</dt><dd>01</dd></div>
+            <div><dt>UNIT</dt><dd>BIT</dd></div>
+            <div><dt>RADIX</dt><dd>2 – 36</dd></div>
+          </dl>
         </div>
-        <div class="divider"></div>
-        <div class="inputs"><label><span class="label a">● ตัวตั้ง (OPERAND A):</span><input id="operand-a" value="1011" autocomplete="off" spellcheck="false" /><small id="base-a">ฐาน 2</small></label><label><span class="label b">● ตัวบวก (OPERAND B):</span><input id="operand-b" value="1101" autocomplete="off" spellcheck="false" /><small id="base-b">ฐาน 2</small></label></div>
-        <div class="actions"><span id="validation">อักขระที่ใช้ได้ในฐาน 2: <b>0 – 1</b></span><div><button id="swap">⇄ สลับ A ↔ B</button><button id="clear">↻ ล้างข้อมูล</button><button id="calculate" class="primary">คำนวณผลลัพธ์</button></div></div>
+        <nav class="tabs" aria-label="เมนูหลัก">
+          <button class="active" data-view="calculator">▣ CALC &amp; METHOD</button>
+          <button data-view="convert">⌗ CONVERT</button>
+          <button data-view="quiz">▤ TEST SHEET</button>
+          <button data-view="table">▱ REFERENCE</button>
+        </nav>
+      </header>
+
+      <!-- ▐▐▐ SHEET 01+02 : CONSOLE ▐▐▐ -->
+      <div id="calculator-view" class="calc-grid">
+        <section class="sheet">
+          <div class="sheet-head"><span class="sht-no">SHT–01</span><h2>INPUT BUS <span>เลือกฐาน &amp; ตัวเลข</span></h2></div>
+
+          <p class="field-title"><b>⌗</b> RADIX SELECTOR · เลือกฐานของตัวเลข</p>
+          <div class="base-options" role="radiogroup" aria-label="เลือกฐาน">
+            <button class="base-card selected" data-base="2">
+              <span>BIN</span><b>ฐาน 2</b><small>ใช้ได้ 0–1</small><em>R2</em>
+            </button>
+            <button class="base-card" data-base="8">
+              <span>OCT</span><b>ฐาน 8</b><small>ใช้ได้ 0–7</small><em>R8</em>
+            </button>
+            <button class="base-card" data-base="10">
+              <span>DEC</span><b>ฐาน 10</b><small>ใช้ได้ 0–9</small><em>R10</em>
+            </button>
+            <button class="base-card" data-base="16">
+              <span>HEX</span><b>ฐาน 16</b><small>ใช้ได้ 0–9 A–F</small><em>R16</em>
+            </button>
+            <label class="base-card custom">
+              <span>CUSTOM</span><b>กำหนดฐานเอง</b>
+              <input id="custom-base" type="number" min="2" max="36" value="5" aria-label="ฐานกำหนดเอง" />
+              <small>R2–R36</small>
+            </label>
+          </div>
+
+          <p class="field-title"><b>⌗</b> OPERAND A · ตัวตั้ง (IN)</p>
+          <label class="operand">
+            <input id="operand-a" value="1011" autocomplete="off" spellcheck="false" />
+            <small id="base-a">ฐาน 2</small>
+          </label>
+
+          <p class="field-title"><b>⌗</b> OPERAND B · ตัวบวก (IN)</p>
+          <label class="operand">
+            <input id="operand-b" value="1101" autocomplete="off" spellcheck="false" />
+            <small id="base-b">ฐาน 2</small>
+          </label>
+
+          <div class="actions">
+            <span id="validation">อักขระที่ใช้ได้ในฐาน 2: <b>0 – 1</b></span>
+            <div>
+              <button id="swap">⇄ SWAP A↔B</button>
+              <button id="clear">↻ CLEAR</button>
+              <button id="calculate" class="primary">EXECUTE ⏎</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="sheet">
+          <div class="sheet-head"><span class="sht-no">SHT–02</span><h2>OUTPUT READOUT <span>ผลลัพธ์การบวก</span></h2></div>
+
+          <div class="instrument">
+            <div class="instrument-top">
+              <span class="led on">MODE · ADD</span>
+              <span id="result-base" class="led on">ฐาน 2</span>
+            </div>
+            <div class="readout" aria-live="polite"><span id="result">11000</span></div>
+            <p id="decimal-result">= 24 ในฐานสิบ</p>
+          </div>
+
+          <p class="field-title"><b>⌗</b> CARRY FLOW · การบวกเรียงหลัก</p>
+          <div class="algorithm" id="algorithm" aria-label="การบวกเรียงหลัก"></div>
+
+          <div class="examples">
+            <b>✨ LOAD SAMPLE · ตัวอย่างโจทย์:</b>
+            <button data-example="1011,1101,2">1011 + 1101 · R2</button>
+            <button data-example="75,26,8">75 + 26 · R8</button>
+            <button data-example="1A,2F,16">1A + 2F · R16</button>
+          </div>
+        </section>
+      </div>
+
+      <!-- ▐▐▐ SHEET 03 : ENGINEERING LOG ▐▐▐ -->
+      <section class="sheet log-sheet">
+        <div class="sheet-head"><span class="sht-no">SHT–03</span><h2>ENGINEERING LOG <span>วิธีคิดทีละหลัก &amp; ตรวจสอบ</span></h2></div>
+        <div class="log-grid">
+          <div>
+            <h3 class="block-title">STEP LOG <span>· (CARRY STEPS)</span></h3>
+            <div id="step-list"></div>
+          </div>
+          <div>
+            <h3 class="block-title">CONVERSION SHEET <span>· (DECIMAL CHECK)</span></h3>
+            <div id="detail-list"></div>
+          </div>
+        </div>
       </section>
-      <section class="panel result-panel" aria-live="polite"><p class="result-label">ผลลัพธ์การบวกเลขฐาน <span>(ADDITION RESULT)</span></p><div class="answer"><span id="result">11000</span><small id="result-base">ฐาน 2</small></div><p id="decimal-result">= 24 ในฐานสิบ</p><div class="steps"><h3>วิธีคิดทีละหลัก <span>(CARRY STEPS)</span></h3><div id="step-list"></div></div></section>
-    </main><script src="script.js"></script>
+
+      <!-- ▐▐▐ CONVERTER SHEET ▐▐▐ -->
+      <section id="convert-view" class="sheet hidden">
+        <div class="sheet-head"><span class="sht-no">CONV–C</span><h2>ตัวแปลงเลขฐาน <span>(BASE CONVERTER)</span></h2></div>
+        <p class="view-intro">แปลงค่าจำนวนเต็มจากฐานต้นทางไปยังฐานปลายทาง (R2–R36) พร้อมแสดงวิธีคิดแบบละเอียด</p>
+
+        <div class="converter-grid">
+          <div class="subpanel">
+            <p class="field-title"><b>⌗</b> INPUT NUMBER · ตัวเลขที่ต้องการแปลง</p>
+            <label class="operand">
+              <input id="conv-input" value="1011" autocomplete="off" spellcheck="false" />
+              <small id="conv-input-base">ฐาน 2</small>
+            </label>
+
+            <p class="field-title"><b>⌗</b> SOURCE BASE · ฐานต้นทาง</p>
+            <div class="conv-pick" role="radiogroup" aria-label="เลือกฐานต้นทาง">
+              <button data-src-base="2" class="selected">R2</button>
+              <button data-src-base="8">R8</button>
+              <button data-src-base="10">R10</button>
+              <button data-src-base="16">R16</button>
+              <label>R=<input id="conv-src-custom" type="number" min="2" max="36" value="2" aria-label="ฐานต้นทางกำหนดเอง" /></label>
+            </div>
+
+            <p class="field-title"><b>⌗</b> TARGET BASE · ฐานปลายทาง</p>
+            <div class="conv-pick" role="radiogroup" aria-label="เลือกฐานปลายทาง">
+              <button data-dst-base="2">R2</button>
+              <button data-dst-base="8">R8</button>
+              <button data-dst-base="10" class="selected">R10</button>
+              <button data-dst-base="16">R16</button>
+              <label>R=<input id="conv-dst-custom" type="number" min="2" max="36" value="10" aria-label="ฐานปลายทางกำหนดเอง" /></label>
+            </div>
+
+            <div class="swap-row">
+              <button id="conv-swap" class="outline">⇄ SWAP · สลับต้นทาง ↔ ปลายทาง (เช่น 2↔10)</button>
+            </div>
+          </div>
+
+          <div class="subpanel">
+            <p class="field-title"><b>⌗</b> OUTPUT · ผลลัพธ์การแปลง</p>
+            <div class="instrument conv-instrument">
+              <div class="instrument-top">
+                <span class="led on">MODE · CONVERT</span>
+                <span id="conv-dst-base" class="led on">ฐาน 10</span>
+              </div>
+              <div class="readout" aria-live="polite"><span id="conv-result">11</span></div>
+              <p id="conv-decimal">= 11 ในฐานสิบ</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="log-grid conv-log">
+          <div>
+            <h3 class="block-title">วิธีคิด · ฐานต้นทาง → ฐานสิบ <span>(POSITIONAL NOTATION)</span></h3>
+            <div id="conv-to-dec"></div>
+          </div>
+          <div>
+            <h3 class="block-title">วิธีคิด · ฐานสิบ → ฐานปลายทาง <span>(DIVISION METHOD)</span></h3>
+            <div id="conv-from-dec"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ▐▐▐ TEST SHEET (QUIZ) ▐▐▐ -->
+      <section id="quiz-view" class="sheet hidden">
+        <div class="sheet-head"><span class="sht-no">TEST–A</span><h2>แบบฝึกหัดเลขฐาน <span>(QUIZ)</span></h2></div>
+        <p class="view-intro">ทดสอบความเข้าใจด้วยโจทย์สุ่ม แล้วดูเฉลยหลังส่งคำตอบ</p>
+
+        <div class="quiz-card">
+          <div class="quiz-head">
+            <p id="quiz-type">โจทย์การบวกฐาน 2</p>
+            <p class="streak" id="quiz-streak">🔥 สตรีค: 0/3</p>
+          </div>
+          <p id="quiz-question" class="quiz-question">1011 + 1101 = ?</p>
+          <div class="quiz-answer">
+            <input id="quiz-input" aria-label="คำตอบแบบฝึกหัด" placeholder="ANSWER / กรอกคำตอบ" autocomplete="off" spellcheck="false" />
+            <button id="check-quiz" class="primary">✓ CHECK ตรวจคำตอบ</button>
+          </div>
+          <p id="quiz-feedback" class="feedback">กด “NEW PROBLEM” เพื่อสุ่มโจทย์และเริ่มฝึกได้ทันที</p>
+          <button id="new-quiz" class="outline">↻ NEW PROBLEM · เริ่มโจทย์ใหม่</button>
+        </div>
+
+        <div class="tips">
+          <div><b>💡 เคล็ดลับ</b><span>เริ่มบวกจากหลักขวาสุด และส่งตัวทดไปหลักถัดไป</span></div>
+          <div><b>🎯 เป้าหมาย</b><span>ตอบให้ถูก 3 ข้อติด เพื่อเป็น Base Master!</span></div>
+        </div>
+      </section>
+
+      <!-- ▐▐▐ REFERENCE SHEET (TABLE) ▐▐▐ -->
+      <section id="table-view" class="sheet hidden">
+        <div class="sheet-head"><span class="sht-no">NOTE–B</span><h2>ตารางเทียบเลขฐาน <span>(REFERENCE)</span></h2></div>
+        <p class="view-intro">เทียบค่าเลขฐานสอง ฐานแปด ฐานสิบ และฐานสิบหกอย่างรวดเร็ว</p>
+
+        <div class="table-toolbar">
+          <label>START <input id="table-start" type="number" min="0" max="240" value="0" /></label>
+          <label>
+            ROWS
+            <select id="table-count">
+              <option value="8">8</option>
+              <option value="16" selected>16</option>
+              <option value="32">32</option>
+            </select>
+          </label>
+          <button id="refresh-table" class="outline">↻ RELOAD · อัปเดต</button>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>DEC</th>
+                <th>BIN · ฐานสอง</th>
+                <th>OCT · ฐานแปด</th>
+                <th>HEX · ฐานสิบหก</th>
+              </tr>
+            </thead>
+            <tbody id="conversion-rows"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <footer class="drawing-footer">
+        SYS: BASE-ADDER · PROPAGATION: RIGHT→LEFT · CONNECTION: PARALLEL BINARY · © 2026
+      </footer>
+    </main>
+
+    <script src="script.js"></script>
   </body>
 </html>
