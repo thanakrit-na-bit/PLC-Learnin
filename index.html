@@ -3,12 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="แบบฝึกหัดการบวกเลขฐานสอง เรียนรู้การบวกเลขไบนารีผ่านโจทย์แบบโต้ตอบ">
-  <title>Binary Addition | แบบฝึกหัดการบวกเลขฐานสอง</title>
+  <meta name="description" content="ระบบเลขฐานครบวงจร เลขฐาน 2 8 10 16 ฝึกบวก ลบ คูณ หาร แปลงฐาน การดำเนินการเชิงบิต สองส่วนเติมเต็ม และโจทย์ PLC">
+  <meta name="theme-color" content="#14213d">
+  <meta property="og:title" content="Base Lab · ระบบเลขฐานครบวงจร">
+  <meta property="og:description" content="ฝึกเลขฐาน 2 8 10 16 แบบครบทุกโจทย์ พร้อมวิธีทำทีละขั้น">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icon.svg">
+  <title>Base Lab | ระบบเลขฐานครบวงจร 2 · 8 · 10 · 16</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=Noto+Sans+Thai:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <style>
     :root {
       --navy: #14213d;
       --blue: #2563eb;
+      --indigo: #7c3aed;
+      --pink: #db2777;
       --blue-light: #eff6ff;
       --yellow: #fbbf24;
       --cream: #fffaf0;
@@ -19,23 +30,35 @@
       --green-bg: #ecfdf3;
       --red: #b42318;
       --red-bg: #fff1f0;
-      --shadow: 0 20px 55px rgba(20, 33, 61, 0.12);
+      --shadow: 0 22px 60px rgba(20, 33, 61, 0.14);
+      --teal: #0f766e;
+      --orange: #c2410c;
+      --glass: rgba(255, 255, 255, 0.72);
+      --glass-border: rgba(255, 255, 255, 0.55);
     }
 
     * { box-sizing: border-box; }
 
+    html { scroll-behavior: smooth; }
+
     body {
       margin: 0;
       color: var(--ink);
-      background:
-        radial-gradient(circle at 80% 5%, rgba(251, 191, 36, 0.19), transparent 26rem),
+      background-color: var(--cream);
+      background-image:
+        radial-gradient(circle at 85% 8%, rgba(124, 58, 237, 0.14), transparent 22rem),
+        radial-gradient(circle at 8% 20%, rgba(37, 99, 235, 0.12), transparent 24rem),
+        radial-gradient(circle at 90% 78%, rgba(251, 191, 36, 0.16), transparent 26rem),
         linear-gradient(180deg, #f8fbff 0%, var(--cream) 100%);
+      background-attachment: fixed;
       font-family: "Noto Sans Thai", "Leelawadee UI", Tahoma, sans-serif;
       line-height: 1.6;
     }
 
     button, input { font: inherit; }
     button { cursor: pointer; }
+
+    .hidden { display: none !important; }
 
     .sr-only {
       position: absolute;
@@ -51,7 +74,7 @@
 
     .page-shell {
       min-height: 100vh;
-      max-width: 1180px;
+      max-width: 1240px;
       margin: auto;
       padding: 28px 22px 56px;
     }
@@ -61,7 +84,7 @@
       align-items: center;
       justify-content: space-between;
       gap: 18px;
-      margin-bottom: 56px;
+      margin-bottom: 44px;
     }
 
     .brand {
@@ -69,21 +92,23 @@
       align-items: center;
       gap: 12px;
       color: var(--navy);
-      font-weight: 800;
+      font-weight: 900;
       letter-spacing: .01em;
+      font-size: 1.05rem;
     }
 
     .brand-mark {
       display: grid;
-      width: 42px;
-      height: 42px;
+      width: 44px;
+      height: 44px;
       place-items: center;
-      border-radius: 13px;
+      border-radius: 14px;
       color: var(--navy);
-      background: var(--yellow);
-      font-family: monospace;
-      font-size: 1.15rem;
-      box-shadow: 4px 4px 0 var(--navy);
+      background: linear-gradient(135deg, var(--yellow), #fcd34d);
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 1.1rem;
+      font-weight: 700;
+      box-shadow: 4px 4px 0 rgba(20, 33, 61, 0.85);
     }
 
     .topbar-tag {
@@ -97,96 +122,107 @@
       grid-template-columns: 1.15fr .85fr;
       align-items: center;
       gap: 52px;
-      margin-bottom: 48px;
+      margin-bottom: 44px;
     }
 
     .eyebrow {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
+      gap: 9px;
       margin: 0 0 14px;
       color: var(--blue);
       font-size: .8rem;
-      font-weight: 800;
+      font-weight: 900;
       letter-spacing: .14em;
       text-transform: uppercase;
     }
 
     .eyebrow::before {
-      width: 24px;
-      height: 2px;
+      width: 26px;
+      height: 3px;
       content: "";
-      background: var(--yellow);
+      border-radius: 99px;
+      background: linear-gradient(90deg, var(--yellow), var(--pink));
     }
 
     h1 {
-      max-width: 680px;
+      max-width: 700px;
       margin: 0 0 18px;
       color: var(--navy);
-      font-size: clamp(2.2rem, 5vw, 4.1rem);
-      line-height: 1.12;
-      letter-spacing: -.055em;
+      font-size: clamp(2.2rem, 5vw, 4rem);
+      line-height: 1.1;
+      letter-spacing: -.05em;
     }
 
-    h1 span { color: var(--blue); }
+    h1 span {
+      background: linear-gradient(92deg, var(--blue), var(--indigo) 55%, var(--pink));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
 
     .hero-copy {
       max-width: 560px;
       margin: 0;
       color: var(--muted);
-      font-size: 1.05rem;
+      font-size: 1.02rem;
     }
 
     .binary-art {
       position: relative;
-      min-height: 260px;
-      padding: 30px;
+      min-height: 270px;
+      padding: 32px;
       overflow: hidden;
-      border-radius: 28px;
+      border-radius: 30px;
       color: #fff;
-      background: var(--navy);
+      background:
+        radial-gradient(circle at 85% 15%, rgba(124, 58, 237, 0.55), transparent 12rem),
+        radial-gradient(circle at 10% 110%, rgba(37, 99, 235, 0.7), transparent 14rem),
+        linear-gradient(160deg, var(--navy), #1e3a5f);
       box-shadow: var(--shadow);
     }
 
     .binary-art::before,
     .binary-art::after {
       position: absolute;
-      border: 1px solid rgba(255, 255, 255, .12);
+      border: 1px solid rgba(255, 255, 255, .13);
       border-radius: 50%;
       content: "";
     }
 
     .binary-art::before {
-      width: 230px;
-      height: 230px;
-      right: -80px;
-      bottom: -110px;
+      width: 240px;
+      height: 240px;
+      right: -85px;
+      bottom: -115px;
     }
 
     .binary-art::after {
-      width: 140px;
-      height: 140px;
-      top: -70px;
-      left: -45px;
+      width: 150px;
+      height: 150px;
+      top: -75px;
+      left: -50px;
     }
 
     .art-label {
       position: relative;
       z-index: 1;
-      margin: 0 0 24px;
-      color: #bfdbfe;
+      margin: 0 0 22px;
+      color: #93c5fd;
       font-size: .9rem;
+      letter-spacing: .05em;
     }
 
     .art-equation {
       position: relative;
       z-index: 1;
       margin: 0;
-      font-family: "Courier New", monospace;
-      font-size: clamp(1.7rem, 5vw, 2.8rem);
+      font-family: "IBM Plex Mono", "Courier New", monospace;
+      font-size: clamp(1.55rem, 4.6vw, 2.5rem);
       font-weight: 700;
-      letter-spacing: .13em;
-      line-height: 1.35;
+      letter-spacing: .1em;
+      line-height: 1.5;
+      white-space: nowrap;
     }
 
     .art-equation .answer { color: var(--yellow); }
@@ -194,15 +230,198 @@
     .workspace {
       display: grid;
       grid-template-columns: 1.25fr .75fr;
-      gap: 22px;
+      gap: 24px;
       align-items: start;
     }
 
+    .dashboard-bar {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 18px;
+      align-items: center;
+      margin-bottom: 22px;
+    }
+
+    .difficulty-panel {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      flex-wrap: wrap;
+      padding: 16px 20px;
+    }
+
+    .control-group { display: flex; align-items: center; gap: 9px; }
+
+    .control-label {
+      color: var(--muted);
+      font-size: .82rem;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .mode-group {
+      display: flex;
+      gap: 3px;
+      padding: 4px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #f1f5f9;
+    }
+
+    .mode-btn {
+      min-width: 52px;
+      border: 0;
+      border-radius: 9px;
+      padding: 8px 13px;
+      color: var(--muted);
+      background: transparent;
+      font-size: .87rem;
+      font-weight: 800;
+      transition: .2s ease;
+    }
+
+    .mode-btn:hover { color: var(--navy); }
+
+    .mode-btn.active {
+      color: #fff;
+      background: linear-gradient(135deg, var(--blue), var(--indigo));
+      box-shadow: 0 3px 12px rgba(37, 99, 235, .35);
+    }
+
+    .base-group { display: flex; gap: 8px; flex-wrap: wrap; }
+
+    .base-chip {
+      --bc: #2563eb;
+      --bgc: #eff6ff;
+      --eg: "";
+      position: relative;
+      display: grid;
+      min-width: 58px;
+      place-items: center;
+      gap: 1px;
+      border: 2px solid var(--line);
+      border-radius: 14px;
+      padding: 8px 12px 6px;
+      color: var(--muted);
+      background: #fff;
+      font-family: "IBM Plex Mono", monospace;
+      line-height: 1.1;
+      transition: .18s ease;
+    }
+
+    .base-chip:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(20, 33, 61, .1); }
+
+    .base-chip .base-num {
+      font-size: 1.18rem;
+      font-weight: 700;
+      color: inherit;
+    }
+
+    .base-chip .base-suffix {
+      font-size: .78rem;
+      font-weight: 600;
+      opacity: .85;
+    }
+
+    .base-chip .base-example {
+      font-size: .66rem;
+      font-weight: 600;
+      opacity: .72;
+      letter-spacing: .02em;
+    }
+
+    .base-chip[data-base="2"]  { --bc: #1d4ed8; --bgc: #dbeafe; --eg: "1011"; }
+    .base-chip[data-base="8"]  { --bc: #c2410c; --bgc: #ffedd5; --eg: "17"; }
+    .base-chip[data-base="10"] { --bc: #15803d; --bgc: #dcfce7; --eg: "15"; }
+    .base-chip[data-base="16"] { --bc: #7e22ce; --bgc: #f3e8ff; --eg: "0F"; }
+
+    .base-chip[data-source="2"], .base-chip[data-target="2"]   { --bc: #1d4ed8; --bgc: #dbeafe; --eg: "1011"; }
+    .base-chip[data-source="8"], .base-chip[data-target="8"]   { --bc: #c2410c; --bgc: #ffedd5; --eg: "17"; }
+    .base-chip[data-source="10"], .base-chip[data-target="10"] { --bc: #15803d; --bgc: #dcfce7; --eg: "15"; }
+    .base-chip[data-source="16"], .base-chip[data-target="16"] { --bc: #7e22ce; --bgc: #f3e8ff; --eg: "0F"; }
+
+    .base-chip.active {
+      color: var(--bc);
+      border-color: var(--bc);
+      background:
+        linear-gradient(160deg, var(--bgc), #fff 85%);
+      box-shadow: 0 6px 0 var(--bc), 0 12px 22px rgba(20, 33, 61, .16);
+    }
+
+    .base-chip.active::after {
+      position: absolute;
+      top: -2px;
+      right: -2px;
+      width: 14px;
+      height: 14px;
+      content: "";
+      border-radius: 50%;
+      background: var(--bc);
+      box-shadow: inset 0 0 0 3px #fff;
+    }
+
+    .base-example::before { content: var(--eg); }
+
+    .timer {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 146px;
+      justify-content: center;
+      padding: 11px 16px;
+      border: 1px solid #fde68a;
+      border-radius: 14px;
+      color: var(--orange);
+      background: #fffbeb;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 1.02rem;
+      font-weight: 700;
+    }
+
+    .timer.is-danger { color: var(--red); background: var(--red-bg); border-color: #fecaca; }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-bottom: 22px;
+    }
+
+    .stat-card {
+      position: relative;
+      overflow: hidden;
+      padding: 17px 20px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, .78);
+      backdrop-filter: blur(6px);
+    }
+
+    .stat-card::after {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      content: "";
+      border-radius: 0 0 99px 99px;
+    }
+
+    .stat-card:nth-child(1)::after { background: var(--teal); }
+    .stat-card:nth-child(2)::after { background: var(--orange); }
+    .stat-card:nth-child(3)::after { background: linear-gradient(90deg, var(--blue), var(--indigo)); }
+
+    .stat-label { display: block; color: var(--muted); font-size: .78rem; font-weight: 700; }
+    .stat-value { display: block; margin-top: 2px; color: var(--navy); font-size: 1.7rem; font-weight: 900; line-height: 1.2; }
+    .stat-value.teal { color: var(--teal); }
+    .stat-value.orange { color: var(--orange); }
+
     .card {
-      border: 1px solid rgba(219, 228, 240, .9);
-      border-radius: 22px;
-      background: rgba(255, 255, 255, .88);
-      box-shadow: 0 10px 35px rgba(20, 33, 61, .06);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      background: var(--glass);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 10px 40px rgba(20, 33, 61, .08);
     }
 
     .practice-card { padding: 30px; }
@@ -217,39 +436,53 @@
 
     h2, h3 { margin: 0; color: var(--navy); line-height: 1.25; }
     h2 { font-size: 1.45rem; }
-    h3 { font-size: 1.1rem; }
+    h3 { font-size: 1.08rem; }
 
     .progress {
       flex-shrink: 0;
-      color: var(--blue);
-      background: var(--blue-light);
+      color: var(--indigo);
+      background: #f5f3ff;
       border-radius: 999px;
-      padding: 5px 12px;
+      padding: 6px 14px;
       font-size: .83rem;
       font-weight: 800;
     }
 
     .question-box {
       margin-bottom: 24px;
-      padding: 26px 18px;
-      border-radius: 16px;
-      background: #f8fafc;
+      padding: 30px 20px;
+      border-radius: 20px;
+      background:
+        radial-gradient(circle at 90% 10%, rgba(124, 58, 237, .35), transparent 10rem),
+        linear-gradient(155deg, var(--navy), #1e3a5f);
+      color: #fff;
       text-align: center;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .06);
     }
 
     .question-box .label {
-      margin: 0 0 12px;
-      color: var(--muted);
+      margin: 0 0 14px;
+      color: #93c5fd;
       font-size: .9rem;
     }
 
     .question {
       margin: 0;
-      color: var(--navy);
-      font-family: "Courier New", monospace;
-      font-size: clamp(2rem, 6vw, 3.15rem);
+      color: #fff;
+      font-family: "IBM Plex Mono", "Courier New", monospace;
+      font-size: clamp(1.7rem, 5vw, 2.9rem);
       font-weight: 700;
-      letter-spacing: .18em;
+      letter-spacing: .08em;
+      line-height: 1.4;
+      overflow-wrap: anywhere;
+      text-shadow: 0 0 34px rgba(59, 130, 246, .5);
+    }
+
+    .question.pop { animation: pop .32s ease; }
+
+    @keyframes pop {
+      0% { transform: scale(.96); opacity: .4; }
+      100% { transform: scale(1); opacity: 1; }
     }
 
     .answer-area { display: flex; gap: 10px; }
@@ -258,51 +491,50 @@
       min-width: 0;
       flex: 1;
       border: 2px solid var(--line);
-      border-radius: 12px;
+      border-radius: 14px;
       outline: 0;
-      padding: 12px 15px;
+      padding: 13px 16px;
       color: var(--navy);
       background: #fff;
-      font-family: "Courier New", monospace;
-      font-size: 1.2rem;
-      letter-spacing: .12em;
+      font-family: "IBM Plex Mono", "Courier New", monospace;
+      font-size: 1.15rem;
+      letter-spacing: .1em;
       transition: border-color .2s, box-shadow .2s;
     }
 
     .answer-input:focus {
       border-color: var(--blue);
-      box-shadow: 0 0 0 4px rgba(37, 99, 235, .12);
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, .14);
     }
 
     .primary-btn, .secondary-btn {
       border: 0;
-      border-radius: 12px;
-      padding: 12px 20px;
+      border-radius: 13px;
+      padding: 13px 22px;
       font-weight: 800;
-      transition: transform .2s, box-shadow .2s, background .2s;
+      transition: transform .18s, box-shadow .18s, background .18s;
     }
 
     .primary-btn {
       color: #fff;
-      background: var(--blue);
-      box-shadow: 0 5px 0 #1d4ed8;
+      background: linear-gradient(135deg, var(--blue), var(--indigo));
+      box-shadow: 0 6px 0 #1d4ed8, 0 14px 28px rgba(37, 99, 235, .28);
     }
 
-    .primary-btn:hover, .secondary-btn:hover {
-      transform: translateY(-2px);
-    }
-
-    .primary-btn:active { transform: translateY(2px); box-shadow: none; }
+    .primary-btn:hover, .secondary-btn:hover { transform: translateY(-2px); }
+    .primary-btn:active { transform: translateY(3px); box-shadow: none; }
 
     .secondary-btn {
       color: var(--navy);
       background: #eef2f7;
     }
 
+    .secondary-btn:hover { background: #e2e8f0; }
+
     .feedback {
       min-height: 28px;
       margin: 18px 2px 0;
-      font-size: .94rem;
+      font-size: .95rem;
       font-weight: 700;
     }
 
@@ -319,12 +551,16 @@
       border-top: 1px solid var(--line);
     }
 
+    .solution-toggle { width: 100%; margin-top: 16px; }
+    .solution-hint { margin: 0 0 12px; color: var(--muted); font-size: .85rem; }
+
     .score { color: var(--muted); font-size: .9rem; }
     .score strong { color: var(--navy); font-size: 1.15rem; }
 
     .side-column { display: grid; gap: 22px; }
-    .guide-card, .tip-card { padding: 26px; }
-    .guide-card h3, .tip-card h3 { margin-bottom: 16px; }
+
+    .guide-card, .tip-card, .ref-card { padding: 26px; }
+    .guide-card h3, .tip-card h3, .ref-card h3 { margin-bottom: 16px; }
 
     .guide-list {
       display: grid;
@@ -350,7 +586,7 @@
       place-items: center;
       border-radius: 50%;
       color: var(--navy);
-      background: var(--yellow);
+      background: linear-gradient(135deg, var(--yellow), #fcd34d);
       font-size: .8rem;
       font-weight: 800;
     }
@@ -362,13 +598,40 @@
     }
 
     .tip-card p { margin: 0; font-size: .92rem; }
-    .binary { font-family: "Courier New", monospace; font-weight: 700; }
+    .binary { font-family: "IBM Plex Mono", monospace; font-weight: 700; }
+
+    .ref-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: .86rem;
+    }
+
+    .ref-table th, .ref-table td { padding: 5px 8px; text-align: center; }
+    .ref-table th { color: var(--muted); font-size: .78rem; font-weight: 800; border-bottom: 1px solid var(--line); }
+    .ref-table td { border-bottom: 1px solid rgba(219, 228, 240, .5); }
+    .ref-table tr:last-child td { border-bottom: 0; }
+    .ref-table td:first-child { color: var(--muted); }
+
+    .saved-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 0;
+      border-bottom: 1px solid rgba(219, 228, 240, .55);
+      font-size: .86rem;
+    }
+
+    .saved-row:last-child { border-bottom: 0; }
+    .saved-key { color: var(--muted); font-weight: 700; }
+    .saved-val { color: var(--navy); font-family: "IBM Plex Mono", monospace; font-weight: 700; white-space: nowrap; }
 
     .solution {
       display: none;
       margin-top: 20px;
-      padding: 17px;
-      border-radius: 12px;
+      padding: 18px;
+      border-radius: 14px;
       color: var(--navy);
       background: var(--green-bg);
       border: 1px solid #bbf7d0;
@@ -376,9 +639,9 @@
 
     .solution.visible { display: block; }
     .solution-title { margin: 0 0 10px; color: var(--green); font-weight: 800; }
-    .solution table { width: 100%; border-collapse: collapse; font-family: "Courier New", monospace; }
+    .solution table { width: 100%; border-collapse: collapse; font-family: "IBM Plex Mono", monospace; }
     .solution td { padding: 4px 7px; border-bottom: 1px solid #d1fae5; }
-    .solution td:first-child { color: var(--muted); font-family: inherit; font-size: .82rem; }
+    .solution td:first-child { color: var(--muted); font-family: inherit; font-size: .82rem; white-space: nowrap; }
     .solution tr:last-child td { border-bottom: 0; }
 
     footer {
@@ -388,21 +651,140 @@
       text-align: center;
     }
 
-    @media (max-width: 820px) {
+    .topbar-actions { display: flex; align-items: center; gap: 10px; }
+
+    .icon-btn {
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      padding: 8px 12px;
+      color: var(--muted);
+      background: rgba(255, 255, 255, .7);
+      font-size: .82rem;
+      font-weight: 800;
+      transition: .18s ease;
+    }
+
+    .icon-btn:hover { color: var(--blue); border-color: var(--blue); }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      display: grid;
+      place-items: center;
+      padding: 18px;
+      background: rgba(20, 33, 61, .5);
+      backdrop-filter: blur(4px);
+    }
+
+    .modal {
+      width: min(520px, 100%);
+      max-height: 84vh;
+      overflow: auto;
+      padding: 26px;
+    }
+
+    .modal h3 { margin-bottom: 14px; }
+    .modal-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+    .modal-actions .primary-btn, .modal-actions .secondary-btn { flex: 1; white-space: nowrap; }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .summary-cell {
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      text-align: center;
+      background: rgba(255, 255, 255, .55);
+    }
+
+    .summary-cell span { display: block; color: var(--muted); font-size: .76rem; font-weight: 700; }
+    .summary-cell strong { color: var(--navy); font-size: 1.3rem; font-weight: 900; }
+    html[data-theme="dark"] .summary-cell { background: rgba(15, 23, 42, .55); }
+
+    #printArea { display: none; }
+
+    .worksheet-title { margin: 0 0 6px; color: var(--ink); font-size: 1.25rem; font-weight: 800; }
+    .worksheet-sub { margin: 0 0 16px; color: var(--muted); font-size: .85rem; }
+    .sheet-line { margin: 7px 0; font-family: "IBM Plex Mono", monospace; font-size: 1.05rem; white-space: pre; }
+
+    .tool-row { display: flex; gap: 8px; margin-top: 12px; }
+
+    html[data-theme="dark"] {
+      color-scheme: dark;
+      --navy: #e8edf7;
+      --ink: #e2e8f0;
+      --muted: #94a3b8;
+      --line: #334155;
+      --cream: #0b1220;
+      --glass: rgba(15, 23, 42, .72);
+      --glass-border: rgba(148, 163, 184, .18);
+      --blue-light: #1e293b;
+    }
+
+    html[data-theme="dark"] body {
+      background-image:
+        radial-gradient(circle at 85% 8%, rgba(124, 58, 237, .22), transparent 22rem),
+        radial-gradient(circle at 8% 20%, rgba(37, 99, 235, .2), transparent 24rem),
+        radial-gradient(circle at 90% 78%, rgba(251, 191, 36, .12), transparent 26rem),
+        linear-gradient(180deg, #0d1526 0%, #0b1220 100%);
+    }
+
+    html[data-theme="dark"] .stat-card,
+    html[data-theme="dark"] .answer-input,
+    html[data-theme="dark"] .base-chip,
+    html[data-theme="dark"] .icon-btn { background: #0f172a; color: var(--ink); }
+    html[data-theme="dark"] .answer-input { color: #e2e8f0; }
+    html[data-theme="dark"] .secondary-btn { background: #1e293b; color: #e2e8f0; }
+    html[data-theme="dark"] .mode-group { background: #0f172a; border-color: var(--line); }
+    html[data-theme="dark"] .tip-card { background: #2a2416; color: #fde68a; }
+    html[data-theme="dark"] .progress { background: #2e1065; color: #a78bfa; }
+    html[data-theme="dark"] .timer { background: #2a2416; color: #fb923c; border-color: #b45309; }
+    html[data-theme="dark"] .saved-row { border-color: var(--line); }
+    html[data-theme="dark"] .saved-val { color: var(--ink); }
+    html[data-theme="dark"] .solution { background: #052e16; color: #e2e8f0; border-color: #166534; }
+    html[data-theme="dark"] .modal-backdrop { background: rgba(0, 0, 0, .62); }
+    html[data-theme="dark"] .guide-list li { color: #94a3b8; }
+
+    @media (max-width: 560px) {
+      .summary-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media print {
+      body > *:not(#printArea) { display: none !important; }
+      #printArea { display: block !important; }
+    }
+
+    @media (max-width: 860px) {
       .hero, .workspace { grid-template-columns: 1fr; }
       .hero { gap: 28px; }
       .binary-art { min-height: 210px; }
+      .dashboard-bar { grid-template-columns: 1fr; }
+      .art-equation { white-space: normal; }
     }
 
     @media (max-width: 520px) {
-      .page-shell { padding: 20px 15px 40px; }
-      .topbar { margin-bottom: 35px; }
+      .page-shell { padding: 18px 14px 40px; }
+      .topbar { margin-bottom: 38px; }
       .topbar-tag { display: none; }
-      .practice-card, .guide-card, .tip-card { padding: 21px; }
+      .practice-card, .guide-card, .tip-card, .ref-card { padding: 21px; }
+      .stats-grid { gap: 8px; }
+      .stat-card { padding: 13px 12px; }
+      .stat-value { font-size: 1.4rem; }
       .answer-area { flex-direction: column; }
       .primary-btn, .secondary-btn { width: 100%; }
       .details { align-items: stretch; flex-direction: column; }
       .details .secondary-btn { width: auto; }
+      .mode-btn { min-width: 0; padding: 8px 10px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .question.pop { animation: none; }
     }
   </style>
 </head>
@@ -410,22 +792,90 @@
   <main class="page-shell">
     <header class="topbar">
       <div class="brand">
-        <span class="brand-mark">01</span>
-        <span>PLC Learning</span>
+        <span class="brand-mark">0x</span>
+        <span>Base Lab</span>
       </div>
-      <p class="topbar-tag">เรียนรู้ทีละขั้น เข้าใจได้จริง</p>
+      <div class="topbar-actions">
+        <p class="topbar-tag">ระบบเลขฐานครบวงจร · เรียนรู้ทีละขั้น เข้าใจได้จริง</p>
+        <button id="soundToggle" class="icon-btn" type="button">เสียง: เปิด</button>
+        <button id="themeToggle" class="icon-btn" type="button">ธีม: สว่าง</button>
+      </div>
     </header>
 
     <section class="hero" aria-labelledby="page-title">
       <div>
-        <p class="eyebrow">Digital logic / lesson 01</p>
-        <h1 id="page-title">แบบฝึกหัดการบวก<br><span>เลขฐานสอง</span></h1>
-        <p class="hero-copy">ฝึกบวกเลขไบนารีให้คล่อง พร้อมเรียนรู้การทดเลขจากหลักขวาไปซ้ายอย่างเป็นขั้นตอน</p>
+        <p class="eyebrow">Number systems · 2 8 10 16</p>
+        <h1 id="page-title">ระบบเลขฐาน<br><span>ครบทุกฐาน ครบทุกคณิต</span></h1>
+        <p class="hero-copy">ฝึกบวก ลบ คูณ หาร และแปลงฐานของเลขฐาน 2, 8, 10, 16 ด้วยเอ็นจินเดียว พร้อมวิธีทำที่ไล่ทีละขั้น</p>
       </div>
       <div class="binary-art" aria-hidden="true">
-        <p class="art-label">ทุกบิตมีความหมาย</p>
-        <p class="art-equation">1011<br>+ 0110<br><span class="answer">= 10001</span></p>
+        <p class="art-label">ค่าเดียวกัน เปลือกต่างกัน</p>
+        <p class="art-equation">1010₂ = 12₈<br>= 10₁₀<br><span class="answer">= A₁₆</span></p>
       </div>
+    </section>
+
+    <section class="dashboard-bar" aria-label="ตัวเลือกการฝึกฝน">
+      <div class="card difficulty-panel">
+        <div class="control-group">
+          <span class="control-label">โหมด</span>
+          <div class="mode-group" role="group" aria-label="เลือกโหมด">
+            <button class="mode-btn active" type="button" data-mode="add">บวก</button>
+            <button class="mode-btn" type="button" data-mode="sub">ลบ</button>
+            <button class="mode-btn" type="button" data-mode="mul">คูณ</button>
+            <button class="mode-btn" type="button" data-mode="div">หาร</button>
+            <button class="mode-btn" type="button" data-mode="convert">แปลง</button>
+            <button class="mode-btn" type="button" data-mode="bits">บิต</button>
+            <button class="mode-btn" type="button" data-mode="compl">2C</button>
+            <button class="mode-btn" type="button" data-mode="plc">PLC</button>
+          </div>
+        </div>
+
+        <div class="control-group" id="baseControl">
+          <span class="control-label" id="baseLabel">ฐาน</span>
+          <div class="base-group" id="baseOptions" role="group" aria-label="เลือกเลขฐาน">
+            <button class="base-chip active" type="button" data-base="2"><span class="base-num">10</span><span class="base-suffix">₂</span><span class="base-example"></span></button>
+            <button class="base-chip" type="button" data-base="8"><span class="base-num">10</span><span class="base-suffix">₈</span><span class="base-example"></span></button>
+            <button class="base-chip" type="button" data-base="10"><span class="base-num">10</span><span class="base-suffix">₁₀</span><span class="base-example"></span></button>
+            <button class="base-chip" type="button" data-base="16"><span class="base-num">10</span><span class="base-suffix">₁₆</span><span class="base-example"></span></button>
+          </div>
+        </div>
+
+        <div class="control-group hidden" id="fromControl">
+          <span class="control-label" id="fromLabel">แปลงจากฐาน</span>
+          <div class="base-group" id="fromOptions" role="group" aria-label="เลือกฐานต้นทาง">
+            <button class="base-chip active" type="button" data-source="2"><span class="base-num">10</span><span class="base-suffix">₂</span><span class="base-example"></span></button>
+            <button class="base-chip" type="button" data-source="8"><span class="base-num">10</span><span class="base-suffix">₈</span><span class="base-example"></span></button>
+            <button class="base-chip" type="button" data-source="10"><span class="base-num">10</span><span class="base-suffix">₁₀</span><span class="base-example"></span></button>
+            <button class="base-chip" type="button" data-source="16"><span class="base-num">10</span><span class="base-suffix">₁₆</span><span class="base-example"></span></button>
+          </div>
+        </div>
+
+        <div class="control-group hidden" id="targetControl">
+          <span class="control-label" id="targetLabel">แปลงเป็นฐาน</span>
+          <div class="base-group" id="targetOptions" role="group" aria-label="เลือกฐานเป้าหมาย">
+            <button class="base-chip" type="button" data-target="2"><span class="base-num">10</span><span class="base-suffix">₂</span><span class="base-example"></span></button>
+            <button class="base-chip" type="button" data-target="8"><span class="base-num">10</span><span class="base-suffix">₈</span><span class="base-example"></span></button>
+            <button class="base-chip active" type="button" data-target="10"><span class="base-num">10</span><span class="base-suffix">₁₀</span><span class="base-example"></span></button>
+            <button class="base-chip" type="button" data-target="16"><span class="base-num">10</span><span class="base-suffix">₁₆</span><span class="base-example"></span></button>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <span class="control-label">ความยาก</span>
+          <div class="base-group" role="group" aria-label="เลือกระดับความยาก">
+            <button class="base-chip active" type="button" data-difficulty="easy">ง่าย</button>
+            <button class="base-chip" type="button" data-difficulty="medium">ปานกลาง</button>
+            <button class="base-chip" type="button" data-difficulty="hard">ยาก</button>
+          </div>
+        </div>
+      </div>
+      <div class="timer" id="timer" aria-live="polite"><span aria-hidden="true">◷</span><span id="timerValue">00:00</span></div>
+    </section>
+
+    <section class="stats-grid" aria-label="สถิติการทำแบบฝึกหัด">
+      <div class="stat-card"><span class="stat-label">ตอบถูก</span><strong class="stat-value teal" id="correctStat">0</strong></div>
+      <div class="stat-card"><span class="stat-label">Streak ต่อเนื่อง</span><strong class="stat-value orange" id="streakStat">0</strong></div>
+      <div class="stat-card"><span class="stat-label">อัตราความถูกต้อง</span><strong class="stat-value" id="accuracyStat">0%</strong></div>
     </section>
 
     <section class="workspace" aria-label="พื้นที่แบบฝึกหัด">
@@ -439,23 +889,26 @@
         </div>
 
         <div class="question-box">
-          <p class="label">ผลลัพธ์ของการบวกคือเท่าไร?</p>
+          <p class="label" id="questionLabel">ผลลัพธ์ของการบวกคือเท่าไร?</p>
           <p class="question" id="question" aria-live="polite">1011 + 0110</p>
         </div>
 
         <form id="answerForm">
-          <label for="answer" class="sr-only">คำตอบเลขฐานสอง</label>
+          <label for="answer" class="sr-only">คำตอบ</label>
           <div class="answer-area">
-            <input id="answer" class="answer-input" type="text" inputmode="numeric" maxlength="9"
-              pattern="[01]+" placeholder="พิมพ์คำตอบ เช่น 10001" autocomplete="off" aria-describedby="feedback">
+            <input id="answer" class="answer-input" type="text" inputmode="numeric" maxlength="32"
+              pattern="[01]+" placeholder="พิมพ์คำตอบที่นี่" autocomplete="off" aria-describedby="feedback">
             <button class="primary-btn" type="submit">ตรวจคำตอบ</button>
           </div>
         </form>
 
         <p id="feedback" class="feedback" role="status" aria-live="polite"></p>
 
+        <button id="showSolution" class="secondary-btn solution-toggle" type="button">แสดงวิธีทำ</button>
+
         <div id="solution" class="solution" aria-live="polite">
-          <p class="solution-title">วิธีคิดจากขวาไปซ้าย</p>
+          <p class="solution-title" id="solutionTitle">วิธีคิดจากขวาไปซ้าย</p>
+          <p class="solution-hint">อ่านทีละแถวจากบนลงล่าง ตัวทด/ตัวยืมจะถูกส่งต่อไปยังหลักถัดไป</p>
           <table>
             <tbody id="solutionRows"></tbody>
           </table>
@@ -463,115 +916,839 @@
 
         <div class="details">
           <div class="score">คะแนนสะสม <strong id="score">0</strong> / <span id="attempts">0</span></div>
-          <button id="newQuestion" class="secondary-btn" type="button">สุ่มโจทย์ใหม่ ↗</button>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button id="openSummary" class="secondary-btn" type="button">สรุปผล</button>
+            <button id="newQuestion" class="secondary-btn" type="button">สุ่มโจทย์ใหม่ ↗</button>
+          </div>
         </div>
       </article>
 
       <aside class="side-column">
         <section class="card guide-card">
-          <h3>หลักการบวกเลขฐานสอง</h3>
-          <ol class="guide-list">
-            <li><span class="step">1</span><span>เริ่มบวกจากหลักขวาสุดเหมือนเลขฐานสิบ</span></li>
-            <li><span class="step">2</span><span>ถ้าผลรวมเป็น 2 ให้เขียน 0 และทด 1</span></li>
-            <li><span class="step">3</span><span>นำตัวทดไปรวมกับหลักถัดไป</span></li>
-          </ol>
+          <h3 id="guideTitle">หลักการบวกเลขฐาน</h3>
+          <ol class="guide-list" id="guideList"></ol>
         </section>
         <section class="card tip-card">
           <h3>จำง่าย ๆ</h3>
-          <p><span class="binary">1 + 1 = 10</span> ในเลขฐานสอง ซึ่งหมายถึง เขียน 0 และทด 1 ไปหลักถัดไป</p>
+          <p id="tipContent"></p>
+        </section>
+        <section class="card ref-card">
+          <h3>ตารางเทียบฐาน 0–15</h3>
+          <table class="ref-table">
+            <thead>
+              <tr><th>10</th><th>2</th><th>8</th><th>16</th></tr>
+            </thead>
+            <tbody id="refBody"></tbody>
+          </table>
+        </section>
+        <section class="card ref-card">
+          <h3>สถิติสะสม (บันทึกในเครื่อง)</h3>
+          <div id="savedStatList"><p class="solution-hint">ลงมือฝึกแล้วสถิติจะถูกบันทึก</p></div>
+          <div class="tool-row">
+            <button id="exportStats" class="secondary-btn" type="button">ส่งออก</button>
+            <button id="importStatsBtn" class="secondary-btn" type="button">นำเข้า</button>
+          </div>
+          <button id="resetStats" class="secondary-btn solution-toggle" type="button">ล้างสถิติ</button>
+          <button id="makeWorksheet" class="secondary-btn solution-toggle" type="button">สร้างใบงาน ✎</button>
         </section>
       </aside>
     </section>
 
-    <footer>ทำให้การเรียนรู้ระบบดิจิทัลเป็นเรื่องสนุกและเข้าใจง่าย</footer>
+    <div id="summaryModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="summaryTitle">
+      <div class="card modal">
+        <h3 id="summaryTitle">สรุปผลรอบนี้</h3>
+        <div class="summary-grid" id="summaryBody"></div>
+        <p class="solution-hint" style="margin-top:14px;">สถิติต่อโหมด-ฐาน ดูได้จากการ์ด "สถิติสะสม" ด้านขวา</p>
+        <div class="modal-actions">
+          <button id="closeSummary" class="secondary-btn" type="button">ปิด</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="worksheetModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="worksheetTitle">
+      <div class="card modal">
+        <h3 id="worksheetTitle">สร้างใบงาน (10 ข้อ)</h3>
+        <p class="solution-hint">ลำดับโจทย์จากโหมดและฐานที่เลือกอยู่ปัจจุบัน</p>
+        <pre id="worksheetPreview" style="background:#f8fafc;white-space:pre-wrap;border-radius:12px;padding:14px;max-height:40vh;overflow:auto;font-family:'IBM Plex Mono',monospace;font-size:.92rem;margin:0;">
+        </pre>
+        <div class="modal-actions">
+          <button id="printWorksheet" class="primary-btn" type="button">พิมพ์ใบงาน</button>
+          <button id="closeWorksheet" class="secondary-btn" type="button">ปิด</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="printArea" aria-hidden="true"></div>
+    <input type="file" id="importStats" class="hidden" accept="application/json,.json">
+
+    <footer>Base Lab · ระบบเลขฐานครบวงจร สำหรับผู้เริ่มต้นการคิดเชิงระบบดิจิทัล</footer>
   </main>
 
   <script>
     (() => {
       const questionElement = document.querySelector("#question");
+      const questionLabel = document.querySelector("#questionLabel");
       const answerInput = document.querySelector("#answer");
       const answerForm = document.querySelector("#answerForm");
       const feedback = document.querySelector("#feedback");
       const solution = document.querySelector("#solution");
       const solutionRows = document.querySelector("#solutionRows");
+      const solutionTitle = document.querySelector("#solutionTitle");
       const questionNumber = document.querySelector("#questionNumber");
       const scoreElement = document.querySelector("#score");
       const attemptsElement = document.querySelector("#attempts");
       const newQuestionButton = document.querySelector("#newQuestion");
+      const showSolutionButton = document.querySelector("#showSolution");
+      const correctStat = document.querySelector("#correctStat");
+      const streakStat = document.querySelector("#streakStat");
+      const accuracyStat = document.querySelector("#accuracyStat");
+      const timerElement = document.querySelector("#timer");
+      const timerValue = document.querySelector("#timerValue");
+      const guideTitle = document.querySelector("#guideTitle");
+      const guideList = document.querySelector("#guideList");
+      const tipContent = document.querySelector("#tipContent");
+      const baseControl = document.querySelector("#baseControl");
+      const baseLabel = document.querySelector("#baseLabel");
+      const baseOptions = document.querySelector("#baseOptions");
+      const fromControl = document.querySelector("#fromControl");
+      const fromLabel = document.querySelector("#fromLabel");
+      const fromOptions = document.querySelector("#fromOptions");
+      const targetControl = document.querySelector("#targetControl");
+      const targetLabel = document.querySelector("#targetLabel");
+      const targetOptions = document.querySelector("#targetOptions");
+      const refBody = document.querySelector("#refBody");
+      const savedStatList = document.querySelector("#savedStatList");
+      const resetStatsButton = document.querySelector("#resetStats");
+      const soundToggle = document.querySelector("#soundToggle");
+      const themeToggle = document.querySelector("#themeToggle");
+      const openSummaryButton = document.querySelector("#openSummary");
+      const summaryModal = document.querySelector("#summaryModal");
+      const summaryBody = document.querySelector("#summaryBody");
+      const closeSummaryButton = document.querySelector("#closeSummary");
+      const exportStatsButton = document.querySelector("#exportStats");
+      const importStatsButton = document.querySelector("#importStatsBtn");
+      const importStatsInput = document.querySelector("#importStats");
+      const makeWorksheetButton = document.querySelector("#makeWorksheet");
+      const worksheetModal = document.querySelector("#worksheetModal");
+      const worksheetPreview = document.querySelector("#worksheetPreview");
+      const printWorksheetButton = document.querySelector("#printWorksheet");
+      const closeWorksheetButton = document.querySelector("#closeWorksheet");
+      const printArea = document.querySelector("#printArea");
 
-      let firstNumber = 0;
-      let secondNumber = 0;
+      const DIGITS = "0123456789ABCDEF";
+      const SUBSCRIPTS = { 2: "₂", 8: "₈", 10: "₁₀", 16: "₁₆" };
+      const BASE_WORDS = { 2: "สอง", 8: "แปด", 10: "สิบ", 16: "สิบหก" };
+
+      const charToVal = (char) => DIGITS.indexOf(char.toUpperCase());
+      const valToChar = (value) => DIGITS[value];
+      const marked = (text, base) => `${text}${SUBSCRIPTS[base]}`;
+
+      const parseBase = (text, base) => {
+        let total = 0;
+        for (const char of text) total = total * base + charToVal(char);
+        return total;
+      };
+
+      const toBaseString = (number, base) => {
+        if (number === 0) return "0";
+        let text = "";
+        while (number > 0) {
+          text = valToChar(number % base) + text;
+          number = Math.floor(number / base);
+        }
+        return text;
+      };
+
+      const isValidString = (text, base) =>
+        !!text && [...text].every((char) => charToVal(char) >= 0 && charToVal(char) < base);
+
+      const normalizeNum = (text) => text.toUpperCase().replace(/^0+(?=\d)/, "") || "0";
+
+      const randomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+
+      const digitSettings = {
+        easy: { base2: 4, other: 2, convertMax: 63 },
+        medium: { base2: 6, other: 3, convertMax: 255 },
+        hard: { base2: 8, other: 4, convertMax: 4095 }
+      };
+
+      let mode = "add";
+      let base = 2;
+      let targetBase = 10;
+      let difficulty = "easy";
+      let operands = [];
+      let operandStrings = [];
+      let sourceBase = 2;
+      let sourceNumber = 0;
+      let expectedString = "";
+      let expectedQ = "0";
+      let expectedR = "0";
+      let plcType = "set";
+      let onChannels = [];
+      let plcMask = 0;
+      let currentOp = "AND";
+      let widthBits = 8;
+      let complValue = 0;
+      const STORAGE_KEY = "baseLabStats";
+      const THEME_KEY = "baseLabTheme";
+      const stats = (() => {
+        try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch (error) { return {}; }
+      })();
+      let soundEnabled = localStorage.getItem("baseLabSound") !== "off";
+      let bestStreak = 0;
+      let wrongCount = 0;
       let questionCount = 1;
       let score = 0;
       let attempts = 0;
+      let streak = 0;
+      let questionScored = false;
+      let elapsedSeconds = 0;
+      let timerId = null;
+      let audioContext = null;
 
-      const randomBinaryNumber = () => Math.floor(Math.random() * 15) + 1;
-      const toPaddedBinary = (number) => number.toString(2).padStart(4, "0");
+      const formatTime = (seconds) => `${String(Math.floor(seconds / 60)).padStart(2, "0")}:${String(seconds % 60).padStart(2, "0")}`;
+
+      const updateStats = () => {
+        scoreElement.textContent = score;
+        attemptsElement.textContent = attempts;
+        correctStat.textContent = score;
+        streakStat.textContent = streak;
+        accuracyStat.textContent = `${attempts ? Math.round(score / attempts * 100) : 0}%`;
+      };
+
+      const startTimer = () => {
+        window.clearInterval(timerId);
+        elapsedSeconds = 0;
+        timerValue.textContent = formatTime(elapsedSeconds);
+        timerElement.classList.remove("is-danger");
+        timerId = window.setInterval(() => {
+          elapsedSeconds += 1;
+          timerValue.textContent = formatTime(elapsedSeconds);
+          timerElement.classList.toggle("is-danger", elapsedSeconds >= 60);
+        }, 1000);
+      };
+
+      const playSound = (isCorrect) => {
+        if (!soundEnabled) return;
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContextClass) return;
+        audioContext = audioContext || new AudioContextClass();
+        const oscillator = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+        oscillator.type = "sine";
+        oscillator.frequency.value = isCorrect ? 660 : 190;
+        gain.gain.setValueAtTime(.0001, audioContext.currentTime);
+        gain.gain.exponentialRampToValueAtTime(.08, audioContext.currentTime + .02);
+        gain.gain.exponentialRampToValueAtTime(.0001, audioContext.currentTime + .22);
+        oscillator.connect(gain).connect(audioContext.destination);
+        oscillator.start();
+        oscillator.stop(audioContext.currentTime + .23);
+      };
 
       const setFeedback = (message, type = "") => {
         feedback.textContent = message;
         feedback.className = `feedback ${type}`.trim();
       };
 
-      const renderSolution = () => {
-        const firstBits = toPaddedBinary(firstNumber);
-        const secondBits = toPaddedBinary(secondNumber);
-        const total = firstNumber + secondNumber;
-        const totalBits = total.toString(2).padStart(5, "0");
-        let carry = 0;
-        const rows = [];
+      const updateInputRules = () => {
+        const usesTargetAnswer = ["convert", "bits", "compl"].includes(mode) ||
+          (mode === "plc" && plcType === "set");
+        const answerBase = usesTargetAnswer ? targetBase : base;
+        const allowed = DIGITS.slice(0, answerBase) + (answerBase === 16 ? "a-f" : "");
+        if (mode === "div") {
+          answerInput.pattern = `^[${allowed}]+( [${allowed}]+)?$`;
+          answerInput.placeholder = "ผลหาร เศษ เช่น 11 1";
+        } else if (mode === "plc" && plcType === "read") {
+          answerInput.pattern = "^[0-7]([ ,][0-7])*$";
+          answerInput.placeholder = "เช่น 0,3,7";
+        } else {
+          answerInput.pattern = `^[${allowed}]+$`;
+          answerInput.placeholder = `พิมพ์คำตอบ เช่น ${valToChar(answerBase - 1)}`;
+        }
+        answerInput.maxLength = 32;
+        answerInput.inputMode = answerBase === 16 || (mode === "plc" && plcType === "read") ? "text" : "numeric";
+      };
 
-        for (let index = 3; index >= 0; index -= 1) {
-          const firstBit = Number(firstBits[index]);
-          const secondBit = Number(secondBits[index]);
-          const sum = firstBit + secondBit + carry;
-          const resultBit = sum % 2;
-          const nextCarry = sum > 1 ? 1 : 0;
-          rows.push(`<tr><td>หลักที่ ${4 - index}</td><td>${firstBit} + ${secondBit}${carry ? ` + ทด ${carry}` : ""} = ${sum} → เขียน ${resultBit}${nextCarry ? " (ทด 1)" : ""}</td></tr>`);
+      const additionSteps = (aStrings, base) => {
+        const width = Math.max(...aStrings.map((text) => text.length));
+        const padded = aStrings.map((text) => text.padStart(width, "0"));
+        const rows = [];
+        let carry = 0;
+        for (let index = width - 1; index >= 0; index -= 1) {
+          const digits = padded.map((row) => row[index]);
+          const values = digits.map((digit) => charToVal(digit));
+          const sum = values.reduce((total, value) => total + value, carry);
+          const resultDigit = sum % base;
+          const nextCarry = Math.floor(sum / base);
+          const expression = [...values, ...(carry ? [`ทด ${carry}`] : [])].join(" + ");
+          rows.push(`<tr><td>หลักที่ ${width - index}</td><td>${expression} = ${sum} → เขียน ${valToChar(resultDigit)}${nextCarry ? ` (ทด ${nextCarry})` : ""}</td></tr>`);
           carry = nextCarry;
         }
-
         if (carry) {
-          rows.push(`<tr><td>หลักสุดท้าย</td><td>ทด ${carry} → เขียน ${totalBits[0]}</td></tr>`);
+          rows.push(`<tr><td>หลักสุดท้าย</td><td>ทด ${carry} → เขียน ${valToChar(carry)}</td></tr>`);
         }
+        return rows;
+      };
 
-        solutionRows.innerHTML = rows.join("");
+      const subtractionSteps = (aString, bString, base) => {
+        const width = Math.max(aString.length, bString.length);
+        const a = aString.padStart(width, "0");
+        const b = bString.padStart(width, "0");
+        const rows = [];
+        let borrow = 0;
+        for (let index = width - 1; index >= 0; index -= 1) {
+          const aValue = charToVal(a[index]);
+          const bValue = charToVal(b[index]);
+          let value = aValue - borrow - bValue;
+          const needsBorrow = value < 0;
+          if (needsBorrow) value += base;
+          const expression = `${aValue}${borrow ? " − 1" : ""} − ${bValue} = ${value}`;
+          const note = needsBorrow ? ` | ไม่พอ ยืม 1 มามีค่า ${base}` : "";
+          rows.push(`<tr><td>หลักที่ ${width - index}</td><td>${expression}${note}</td></tr>`);
+          borrow = needsBorrow ? 1 : 0;
+        }
+        return rows;
+      };
+
+      const multiplyByDigit = (aText, digitValue, base) => {
+        let carry = 0;
+        let out = "";
+        for (let index = aText.length - 1; index >= 0; index -= 1) {
+          const product = charToVal(aText[index]) * digitValue + carry;
+          out = valToChar(product % base) + out;
+          carry = Math.floor(product / base);
+        }
+        if (carry) out = valToChar(carry) + out;
+        return out;
+      };
+
+      const multiplicationSteps = (aText, bText, base) => {
+        const rows = [];
+        const partials = [];
+        for (let j = bText.length - 1; j >= 0; j -= 1) {
+          const digitValue = charToVal(bText[j]);
+          const raw = multiplyByDigit(aText, digitValue, base);
+          const shift = bText.length - 1 - j;
+          const shifted = raw + "0".repeat(shift);
+          partials.push(shifted);
+          rows.push(
+            `<tr><td>คูณด้วย ${valToChar(digitValue)}</td>` +
+            `<td>${marked(aText, base)} × ${valToChar(digitValue)} = ${marked(shifted, base)}</td></tr>`
+          );
+        }
+        rows.push(`<tr><td>รวมย่อย</td><td>${partials.map((p) => marked(p, base)).join(" + ")}</td></tr>`);
+        rows.push(...additionSteps(partials.map((p) => p.replace(/^0+/, "")), base));
+        return rows;
+      };
+
+      const divisionSteps = (dividendText, divisorText, base) => {
+        const divisor = parseBase(divisorText, base);
+        const rows = [];
+        let partial = 0;
+        let quotientText = "";
+        for (let index = 0; index < dividendText.length; index += 1) {
+          const digit = dividendText[index];
+          const previous = partial;
+          partial = partial * base + charToVal(digit);
+          const quotientDigit = Math.floor(partial / divisor);
+          const remainder = partial - quotientDigit * divisor;
+          quotientText += valToChar(quotientDigit);
+          rows.push(
+            `<tr><td>ขั้นที่ ${index + 1}</td>` +
+            `<td>นำ ${digit} ลงมา → ${marked(toBaseString(previous, base), base)}×${base} + ${digit} = ${marked(toBaseString(partial, base), base)} → หารได้ ${valToChar(quotientDigit)} เหลือ ${marked(toBaseString(remainder, base), base)}</td></tr>`
+          );
+          partial = remainder;
+        }
+        rows.push(
+          `<tr><td>ผลลัพธ์</td>` +
+          `<td>ผลหาร ${marked(normalizeNum(quotientText), base)} เศษ ${marked(toBaseString(partial, base), base)}</td></tr>`
+        );
+        return rows;
+      };
+
+      const conversionSteps = (text, fromBase, toBase) => {
+        const decimal = parseBase(text, fromBase);
+        const result = toBaseString(decimal, toBase);
+        return [
+          `<tr><td>ถอดค่า</td><td>${marked(text, fromBase)} = ${decimal}${SUBSCRIPTS[10]}</td></tr>`,
+          `<tr><td>แปลงค่า</td><td>${decimal}${SUBSCRIPTS[10]} → ${marked(result, toBase)}</td></tr>`,
+          `<tr><td>ผลลัพธ์</td><td>${marked(text, fromBase)} = <strong>${marked(result, toBase)}</strong></td></tr>`
+        ];
+      };
+
+      const opResult = (x, y, op) => (op === "AND" ? x & y : op === "OR" ? x | y : x ^ y);
+
+      const toBinaryPadded = (number, width) => toBaseString(number, 2).padStart(width, "0");
+
+      const bitsSteps = (aText, bText, op, width, displayBase, targetBase) => {
+        const aBinary = toBinaryPadded(parseBase(aText, displayBase), width);
+        const bBinary = toBinaryPadded(parseBase(bText, displayBase), width);
+        const rows = [];
+        let outBinary = "";
+        for (let index = 0; index < width; index += 1) {
+          const aBit = Number(aBinary[index]);
+          const bBit = Number(bBinary[index]);
+          const resultBit = opResult(aBit, bBit, op);
+          outBinary += String(resultBit);
+          rows.push(`<tr><td>บิต ${width - 1 - index}</td><td>${aBit} ${op} ${bBit} = ${resultBit}</td></tr>`);
+        }
+        const outputValue = parseBase(outBinary, 2);
+        rows.push(
+          `<tr><td>ผลลัพธ์</td><td>${marked(outBinary, 2)} = <strong>${marked(toBaseString(outputValue, targetBase), targetBase)}</strong></td></tr>`
+        );
+        return rows;
+      };
+
+      const complSteps = (value, width, targetBase) => {
+        const representation = value >= 0 ? value : (2 ** width) + value;
+        const binary = toBinaryPadded(representation, width);
+        const rows = [];
+        if (value < 0) {
+          const positive = toBinaryPadded(-value, width);
+          const inverted = [...positive].map((bit) => (bit === "0" ? "1" : "0")).join("");
+          const plusOne = toBinaryPadded(representation, width);
+          rows.push(`<tr><td>ค่าบวก</td><td>|${value}${SUBSCRIPTS[10]}| = ${marked(positive, 2)} (${width} บิต)</td></tr>`);
+          rows.push(`<tr><td>กลับบิต</td><td>NOT ${marked(positive, 2)} = ${marked(inverted, 2)}</td></tr>`);
+          rows.push(`<tr><td>+1</td><td>${marked(inverted, 2)} + 1 = ${marked(plusOne, 2)}</td></tr>`);
+          rows.push(`<tr><td>ผลลัพธ์</td><td>= <strong>${marked(toBaseString(representation, targetBase), targetBase)}</strong></td></tr>`);
+        } else {
+          rows.push(`<tr><td>ค่าไม่ติดลบ</td><td>${value}${SUBSCRIPTS[10]} ≥ 0 เขียนตรง ๆ ใน ${width} บิต</td></tr>`);
+          rows.push(`<tr><td>ผลลัพธ์</td><td>= <strong>${marked(toBaseString(representation, targetBase), targetBase)}</strong></td></tr>`);
+        }
+        return rows;
+      };
+
+      const plcSteps = (plcType, channels, maskValue, targetBase) => {
+        const rows = [];
+        if (plcType === "set") {
+          const bits = Array.from({ length: 8 }, () => 0);
+          channels.forEach((channel) => { bits[channel] = 1; });
+          rows.push(`<tr><td>ช่องที่เลือก</td><td>${channels.map((channel) => `%Q0.${channel}`).join(", ")} → บิต = 1</td></tr>`);
+          rows.push(`<tr><td>เรียงบิต</td><td>${marked(bits.slice().reverse().join(""), 2)} (%Q0.7 … %Q0.0)</td></tr>`);
+          rows.push(`<tr><td>ค่า</td><td>%QB0 = <strong>${marked(toBaseString(maskValue, targetBase), targetBase)}</strong></td></tr>`);
+        } else {
+          rows.push(`<tr><td>ค่าที่อ่านได้</td><td>%QB0 = ${marked(toBaseString(maskValue, 16), 16)}</td></tr>`);
+          if (channels.length === 0) {
+            rows.push(`<tr><td>ผลลัพธ์</td><td>ไม่มีช่องไหน ON</td></tr>`);
+          }
+          channels.forEach((channel) => {
+            rows.push(`<tr><td>บิต ${channel}</td><td>= 1 → <strong>%Q0.${channel} ON</strong></td></tr>`);
+          });
+        }
+        return rows;
+      };
+
+      const parseChannels = (text) => {
+        const parts = text.split(/[\s,]+/).filter(Boolean);
+        if (!parts.length) return null;
+        const values = parts.map((part) => {
+          if (!/^[0-7]$/.test(part)) return null;
+          return Number(part);
+        });
+        if (values.some((value) => value === null)) return null;
+        return [...new Set(values)].sort((a, b) => a - b);
+      };
+
+      const sameChannels = (a, b) => a.length === b.length && a.every((value, index) => value === b[index]);
+
+      const renderSolution = () => {
+        if (mode === "add") {
+          solutionTitle.textContent = "วิธีคิดจากขวาไปซ้าย (การทด)";
+          solutionRows.innerHTML = additionSteps(operandStrings, base).join("");
+        } else if (mode === "sub") {
+          solutionTitle.textContent = "วิธีคิดจากขวาไปซ้าย (การยืม)";
+          solutionRows.innerHTML = subtractionSteps(operandStrings[0], operandStrings[1], base).join("");
+        } else if (mode === "mul") {
+          solutionTitle.textContent = "วิธีคูณทีละหลัก (ผลคูณย่อย + การทด)";
+          solutionRows.innerHTML = multiplicationSteps(operandStrings[0], operandStrings[1], base).join("");
+        } else if (mode === "div") {
+          solutionTitle.textContent = "วิธีหารยาว (นำหลักลงมาทีละขั้น)";
+          solutionRows.innerHTML = divisionSteps(operandStrings[0], operandStrings[1], base).join("");
+        } else if (mode === "bits") {
+          solutionTitle.textContent = "วิธีคิดทีละบิต (ตารางความจริง)";
+          solutionRows.innerHTML = bitsSteps(operandStrings[0], operandStrings[1], currentOp, widthBits, sourceBase, targetBase).join("");
+        } else if (mode === "compl") {
+          solutionTitle.textContent = "วิธีหาสองส่วนเติมเต็ม (กลับบิต + บวกหนึ่ง)";
+          solutionRows.innerHTML = complSteps(complValue, widthBits, targetBase).join("");
+        } else if (mode === "plc") {
+          solutionTitle.textContent = plcType === "set" ? "วิธีตั้งค่า %QB0 (เปิดช่อง = บิต 1)" : "วิธีถอดสถานะจากค่า %QB0";
+          solutionRows.innerHTML = plcSteps(plcType, onChannels, plcMask, targetBase).join("");
+        } else {
+          solutionTitle.textContent = "วิธีแปลงเลขฐาน (ผ่านฐานสิบ)";
+          solutionRows.innerHTML = conversionSteps(operandStrings[0], sourceBase, targetBase).join("");
+        }
+      };
+
+      const updateGuide = () => {
+        if (mode === "add") {
+          guideTitle.textContent = `หลักการบวกเลขฐาน${BASE_WORDS[base]}`;
+          guideList.innerHTML = `
+            <li><span class="step">1</span><span>เริ่มบวกจากหลักขวาสุด เหมือนเลขฐานสิบ</span></li>
+            <li><span class="step">2</span><span>ถ้าผลรวมถึง ${base} ให้เขียนเศษ แล้วทด 1</span></li>
+            <li><span class="step">3</span><span>นำตัวทดไปรวมกับหลักถัดไป</span></li>`;
+          tipContent.innerHTML = `ในเลขฐาน ${base} ตัวเลขสูงสุดคือ <span class="binary">${valToChar(base - 1)}</span> — บวกอีก 1 จะกลายเป็น <span class="binary">10${SUBSCRIPTS[base]}</span>`;
+        } else if (mode === "sub") {
+          guideTitle.textContent = `หลักการลบเลขฐาน${BASE_WORDS[base]}`;
+          guideList.innerHTML = `
+            <li><span class="step">1</span><span>เริ่มลบจากหลักขวาสุด เหมือนเลขฐานสิบ</span></li>
+            <li><span class="step">2</span><span>ถ้าหลักบนน้อยกว่า ให้ยืม 1 จากหลักถัดไป — ค่าที่ได้คือ ${base}</span></li>
+            <li><span class="step">3</span><span>ลบหลักถัดไปโดยหักตัวยืมออก</span></li>`;
+          tipContent.innerHTML = `การยืม 1 มา มูลค่าเท่ากับฐาน: ในฐาน 2 = <span class="binary">2${SUBSCRIPTS[10]}</span>, ฐาน 8 = <span class="binary">8${SUBSCRIPTS[10]}</span>, ฐาน 16 = <span class="binary">16${SUBSCRIPTS[10]}</span>`;
+        } else if (mode === "mul") {
+          guideTitle.textContent = `หลักการคูณเลขฐาน${BASE_WORDS[base]}`;
+          guideList.innerHTML = `
+            <li><span class="step">1</span><span>คูณตัวบนทีละหลักกับตัวคูณแต่ละหลัก (ขวาไปซ้าย)</span></li>
+            <li><span class="step">2</span><span>ผลคูณย่อยแต่ละแถว เลื่อนไปทางซ้ายตามหลัก</span></li>
+            <li><span class="step">3</span><span>นำผลคูณย่อยทั้งหมดมาบวกกันด้วยกฎการทด</span></li>`;
+          tipContent.innerHTML = `จำนวนหลักของผลคูณโดยประมาณ = หลักของตัวตั้ง + หลักของตัวคูณ เช่น <span class="binary">F₁₆ × 5₁₆ = 4B₁₆</span>`;
+        } else if (mode === "div") {
+          guideTitle.textContent = `หลักการหารเลขฐาน${BASE_WORDS[base]}`;
+          guideList.innerHTML = `
+            <li><span class="step">1</span><span>นำตัวตั้งลงมาทีละหลัก จากซ้ายไปขวา</span></li>
+            <li><span class="step">2</span><span>ลองคูณว่า ตัวหารหารได้เต็มกี่ครั้ง เขียนเป็นหลักผลหาร</span></li>
+            <li><span class="step">3</span><span>หักออก เหลือเศษ ส่งต่อหลักถัดไป — นี่คือการหารยาว</span></li>`;
+          tipContent.innerHTML = `การหารคือการคูณย้อนกลับ: <span class="binary">13₁₆ ÷ 5₁₆ = 3₁₆ เศษ 4</span>`;
+        } else if (mode === "bits") {
+          guideTitle.textContent = "หลักการดำเนินการเชิงบิต";
+          guideList.innerHTML = `
+            <li><span class="step">1</span><span>แปลงตัวตั้งทั้งสองให้เป็นเลขฐานสอง</span></li>
+            <li><span class="step">2</span><span>บิตคู่เดียวกันนำมารวมด้วย AND / OR / XOR</span></li>
+            <li><span class="step">3</span><span>แปลงผลบิตกลับเป็นฐานที่ต้องการ</span></li>`;
+          tipContent.innerHTML = `จำง่าย ๆ: <span class="binary">1 AND 1 = 1</span> · <span class="binary">1 OR 0 = 1</span> · <span class="binary">1 XOR 1 = 0</span> (ต่างกันได้ 1)`;
+        } else if (mode === "compl") {
+          guideTitle.textContent = "หลักการสองส่วนเติมเต็ม (2's complement)";
+          guideList.innerHTML = `
+            <li><span class="step">1</span><span>เลขบวก: เขียนเป็นเลขอิงบิตตรง ๆ</span></li>
+            <li><span class="step">2</span><span>เลขลบ: กลับบิตทั้งหมด (NOT)</span></li>
+            <li><span class="step">3</span><span>บวกหนึ่งเพิ่มอีก 1 แล้วตอบ</span></li>`;
+          tipContent.innerHTML = `ใน ${widthBits} บิต มีค่าตั้งแต่ <span class="binary">-${2 ** (widthBits - 1)}</span> ถึง <span class="binary">${2 ** (widthBits - 1) - 1}</span> · บิตบนสุดบอกจากลบ`;
+        } else if (mode === "plc") {
+          guideTitle.textContent = "ประยุกต์กับ PLC (%QB / %QW)";
+          guideList.innerHTML = `
+            <li><span class="step">1</span><span>เอาต์พุตแต่ละช่องแทนด้วยบิต 0–7 ใน %QB0</span></li>
+            <li><span class="step">2</span><span>เปิดช่อง = ตั้งบิตให้เป็น 1</span></li>
+            <li><span class="step">3</span><span>แปลงชุดบิตเป็นค่าฐานสิบหกไปตั้งค่า</span></li>`;
+          tipContent.innerHTML = `ช่อง MAX หนึ่งไบต์สื่อค่าสถานะ 8 เอาต์พุต / 8 อินพุต — ตัวเลขในฐาน 16 เขียนจัดการง่ายสุด`;
+        } else {
+          guideTitle.textContent = "หลักการแปลงเลขฐาน";
+          guideList.innerHTML = `
+            <li><span class="step">1</span><span>ถอดค่าแต่ละหลัก: ตัวเลข × ฐาน^ตำแหน่ง</span></li>
+            <li><span class="step">2</span><span>รวมเป็นเลขฐานสิบก่อน (สะพานกลาง)</span></li>
+            <li><span class="step">3</span><span>หารสั้นด้วยฐานเป้าหมาย อ่านเศษย้อนกลับ</span></li>`;
+          tipContent.innerHTML = `จำความหมายของ <span class="binary">10${SUBSCRIPTS[2]} = 2${SUBSCRIPTS[10]}</span> · <span class="binary">10${SUBSCRIPTS[8]} = 8${SUBSCRIPTS[10]}</span> · <span class="binary">10${SUBSCRIPTS[16]} = 16${SUBSCRIPTS[10]}</span>`;
+        }
+      };
+
+      const updateControls = () => {
+        const usesBaseControl = ["add", "sub", "mul", "div"].includes(mode);
+        const usesFromControl = mode === "convert" || mode === "bits";
+        const usesTargetControl = ["convert", "bits", "compl", "plc"].includes(mode);
+        baseControl.classList.toggle("hidden", !usesBaseControl);
+        baseLabel.classList.toggle("hidden", !usesBaseControl);
+        baseOptions.classList.toggle("hidden", !usesBaseControl);
+        fromControl.classList.toggle("hidden", !usesFromControl);
+        fromLabel.classList.toggle("hidden", !usesFromControl);
+        fromOptions.classList.toggle("hidden", !usesFromControl);
+        targetControl.classList.toggle("hidden", !usesTargetControl);
+        targetLabel.classList.toggle("hidden", !usesTargetControl);
+        targetOptions.classList.toggle("hidden", !usesTargetControl);
       };
 
       const createQuestion = () => {
-        firstNumber = randomBinaryNumber();
-        secondNumber = randomBinaryNumber();
-        questionElement.textContent = `${toPaddedBinary(firstNumber)} + ${toPaddedBinary(secondNumber)}`;
+        const settings = digitSettings[difficulty];
+        const widthByDifficulty = { easy: 4, medium: 8, hard: 16 };
+        updateInputRules();
+
+        if (mode === "bits") {
+          widthBits = widthByDifficulty[difficulty];
+          const maxValue = (2 ** widthBits) - 1;
+          const a = randomInt(1, maxValue);
+          const b = randomInt(1, maxValue);
+          currentOp = ["AND", "OR", "XOR"][randomInt(0, 2)];
+          operands = [a, b];
+          operandStrings = operands.map((number) => toBaseString(number, sourceBase));
+          expectedString = toBaseString(opResult(a, b, currentOp), targetBase);
+          questionLabel.textContent = `ผลของ A ${currentOp} B ในเลขฐาน ${BASE_WORDS[sourceBase]} คือเท่าไร?`;
+          questionElement.textContent = `${marked(operandStrings[0], sourceBase)} ${currentOp} ${marked(operandStrings[1], sourceBase)}`;
+        } else if (mode === "compl") {
+          widthBits = widthByDifficulty[difficulty];
+          const lower = -(2 ** (widthBits - 1));
+          const upper = (2 ** (widthBits - 1)) - 1;
+          let value = 0;
+          do { value = randomInt(lower, upper); } while (value === 0);
+          complValue = value;
+          const representation = value >= 0 ? value : (2 ** widthBits) + value;
+          expectedString = toBaseString(representation, targetBase);
+          questionLabel.textContent = `จงเขียนค่า ${widthBits} บิต ในรูปแบบ 2's complement ของ`;
+          questionElement.textContent = `${complValue}${SUBSCRIPTS[10]} (${widthBits} บิต)`;
+        } else if (mode === "plc") {
+          if (Math.random() < 0.5) {
+            plcType = "set";
+            const channels = [0, 1, 2, 3, 4, 5, 6, 7];
+            for (let index = channels.length - 1; index > 0; index -= 1) {
+              const swapIndex = randomInt(0, index);
+              [channels[index], channels[swapIndex]] = [channels[swapIndex], channels[index]];
+            }
+            const count = randomInt(1, 4);
+            onChannels = channels.slice(0, count).sort((x, y) => x - y);
+            plcMask = onChannels.reduce((mask, channel) => mask + (2 ** channel), 0);
+            expectedString = toBaseString(plcMask, targetBase);
+            questionLabel.textContent = "ต้องการเปิดเอาต์พุตช่องที่เลือก → ต้องตั้งค่า %QB0 = ?";
+            questionElement.textContent = `${onChannels.map((channel) => `%Q0.${channel}`).join(", ")} → %QB0 = ?`;
+          } else {
+            plcType = "read";
+            plcMask = randomInt(0, 255);
+            onChannels = [];
+            for (let channel = 0; channel < 8; channel += 1) {
+              if (plcMask & (2 ** channel)) onChannels.push(channel);
+            }
+            expectedString = "plc-read";
+            questionLabel.textContent = "ถอดสถานะเอาต์พุต: %Q0.0–%Q0.7 ตัวไหน ON? (ตอบคั่นด้วย , หรือ ช่องว่าง)";
+            questionElement.textContent = `%QB0 = ${toBaseString(plcMask, 16)}`;
+          }
+        } else if (mode === "convert") {
+          sourceNumber = randomInt(1, settings.convertMax);
+          operandStrings = [toBaseString(sourceNumber, sourceBase)];
+          expectedString = toBaseString(sourceNumber, targetBase);
+          questionLabel.textContent = `แปลงเลขฐาน ${BASE_WORDS[sourceBase]} ให้เป็นเลขฐาน ${BASE_WORDS[targetBase]} (0–${valToChar(targetBase - 1)})`;
+          questionElement.textContent = marked(operandStrings[0], sourceBase);
+        } else {
+          const digits = base === 2 ? settings.base2 : settings.other;
+          const maxValue = base ** digits - 1;
+
+          if (mode === "sub") {
+            const b = randomInt(0, maxValue);
+            const a = randomInt(b, maxValue);
+            operands = [a, b];
+            const strings = operands.map((number) => toBaseString(number, base));
+            const width = Math.max(...strings.map((text) => text.length));
+            operandStrings = strings.map((text) => text.padStart(width, "0"));
+            expectedString = toBaseString(a - b, base);
+            questionLabel.textContent = "ผลลัพธ์ของการลบคือเท่าไร?";
+            questionElement.textContent = `${marked(operandStrings[0], base)} − ${marked(operandStrings[1], base)}`;
+          } else if (mode === "mul") {
+            const a = randomInt(1, maxValue);
+            const b = randomInt(1, maxValue);
+            operands = [a, b];
+            operandStrings = operands.map((number) => toBaseString(number, base));
+            expectedString = toBaseString(a * b, base);
+            questionLabel.textContent = "ผลลัพธ์ของการคูณคือเท่าไร?";
+            questionElement.textContent = `${marked(operandStrings[0], base)} × ${marked(operandStrings[1], base)}`;
+          } else if (mode === "div") {
+            const divisor = randomInt(2, maxValue);
+            const quotient = randomInt(1, maxValue);
+            const leftover = divisor > 1 && Math.random() < 0.35 ? randomInt(0, divisor - 1) : 0;
+            const dividend = quotient * divisor + leftover;
+            operandStrings = [toBaseString(dividend, base), toBaseString(divisor, base)];
+            expectedQ = toBaseString(Math.floor(dividend / divisor), base);
+            expectedR = toBaseString(dividend % divisor, base);
+            expectedString = `${expectedQ} ${expectedR}`;
+            questionLabel.textContent = "ผลหารคือเท่าไร? (เขียนเศษต่อท้าย เช่น 11 1)";
+            questionElement.textContent = `${marked(operandStrings[0], base)} ÷ ${marked(operandStrings[1], base)}`;
+          } else {
+            const count = difficulty === "hard" ? 3 : 2;
+            operands = Array.from({ length: count }, () => randomInt(1, maxValue));
+            const strings = operands.map((number) => toBaseString(number, base));
+            const width = Math.max(...strings.map((text) => text.length));
+            operandStrings = strings.map((text) => text.padStart(width, "0"));
+            expectedString = toBaseString(operands.reduce((total, number) => total + number, 0), base);
+            questionLabel.textContent = "ผลลัพธ์ของการบวกคือเท่าไร?";
+            questionElement.textContent = operandStrings.map((text) => marked(text, base)).join(" + ");
+          }
+        }
+
+        questionScored = false;
+        wrongCount = 0;
         questionNumber.textContent = `ข้อที่ ${questionCount}`;
         answerInput.value = "";
         solution.classList.remove("visible");
+        showSolutionButton.textContent = "แสดงวิธีทำ";
         setFeedback("");
+        questionElement.classList.remove("pop");
+        void questionElement.offsetWidth;
+        questionElement.classList.add("pop");
+        updateInputRules();
+        startTimer();
         answerInput.focus();
       };
 
       answerForm.addEventListener("submit", (event) => {
         event.preventDefault();
         const answer = answerInput.value.trim();
-        const expected = (firstNumber + secondNumber).toString(2);
+        const usesTargetAnswer = ["convert", "bits", "compl"].includes(mode) ||
+          (mode === "plc" && plcType === "set");
+        const answerBase = usesTargetAnswer ? targetBase : base;
 
-        if (!/^[01]+$/.test(answer)) {
-          setFeedback("กรุณาพิมพ์คำตอบเป็นเลข 0 และ 1 เท่านั้น", "error");
+        let correct = false;
+
+        if (mode === "plc" && plcType === "read") {
+          const channels = parseChannels(answer);
+          if (!channels) {
+            setFeedback("กรุณาพิมพ์ช่องเอาต์พุต เช่น 0,3,7 (ค่า 0–7)", "error");
+            return;
+          }
+          attempts += 1;
+          correct = sameChannels(channels, onChannels);
+        } else if (mode === "div") {
+          const parts = answer.split(/\s+/);
+          if (parts.length < 1 || parts.length > 2 || !parts.every((part) => isValidString(part, answerBase))) {
+            setFeedback("กรุณาพิมพ์เป็น \"ผลหาร เศษ\" ในเลขฐานที่ถูกต้อง เช่น 11 1", "error");
+            return;
+          }
+          const quotientAnswer = normalizeNum(parts[0]);
+          const remainderAnswer = parts.length === 2 ? normalizeNum(parts[1]) : "0";
+          attempts += 1;
+          correct = quotientAnswer === normalizeNum(expectedQ) && remainderAnswer === normalizeNum(expectedR);
+        } else {
+          if (!isValidString(answer, answerBase)) {
+            setFeedback("กรุณาพิมพ์คำตอบให้เป็นตัวเลขที่ถูกต้องตามฐาน", "error");
+            return;
+          }
+          attempts += 1;
+          correct = normalizeNum(answer) === normalizeNum(expectedString);
+        }
+
+        if (correct) {
+          window.clearInterval(timerId);
+          if (!questionScored) {
+            score += 1;
+            streak += 1;
+            bestStreak = Math.max(bestStreak, streak);
+            questionScored = true;
+          }
+          setFeedback(`ถูกต้องมาก! ใช้เวลา ${formatTime(elapsedSeconds)}`, "success");
+          playSound(true);
+        } else {
+          streak = 0;
+          wrongCount += 1;
+          const hintEnabled = wrongCount >= 2;
+          const revealEnabled = wrongCount >= 3;
+          if (revealEnabled) {
+            const reveal = mode === "plc" && plcType === "read"
+              ? onChannels.map((channel) => `%Q0.${channel}`).join(", ")
+              : `${expectedString}${["convert", "bits", "compl"].includes(mode) || (mode === "plc" && plcType === "set") ? SUBSCRIPTS[targetBase] : mode === "plc" ? "" : SUBSCRIPTS[base]}`;
+            setFeedback(`เฉลย: ${reveal} — ลองทบทวนหลักการดูนะ`, "error");
+          } else if (hintEnabled) {
+            setFeedback(`คำใบ้: ${HINTS[mode] || ""}`, "error");
+          } else {
+            setFeedback("ยังไม่ถูก ลองเปิดดูวิธีทำ แล้วลองใหม่นะ", "error");
+          }
+          playSound(false);
+        }
+        recordAttempt(correct);
+        updateStats();
+      });
+
+      const MODE_LABELS = {
+        add: "บวก", sub: "ลบ", mul: "คูณ", div: "หาร",
+        convert: "แปลง", bits: "บิต", compl: "2C", plc: "PLC"
+      };
+
+      const HINTS = {
+        add: "เริ่มจากหลักขวาสุด ถ้าผลรวมถึงฐานให้ทด 1",
+        sub: "ถ้าไม่พอให้ยืม 1 จากหลักถัดไป (ยืมได้เท่ากับฐาน)",
+        mul: "คูณทีละหลัก แล้วรวมผลคูณย่อยด้วยการทด",
+        div: "หารยาว: นำหลักตัวตั้งลงมาทีละตัวจากซ้าย",
+        convert: "แปลงผ่านเลขฐานสิบ (สะพานกลาง)",
+        bits: "แยกเป็นตารางบิตทีละตำแหน่ง แล้วใช้ AND/OR/XOR",
+        compl: "เลขลบ: กลับบิตทั้งหมด แล้วบวก 1",
+        plc: "แต่ละช่องตรงกับบิต 0–7 — เปิดช่อง = ตั้งบิต 1"
+      };
+
+      const currentStatKey = () => {
+        if (mode === "plc") return "plc";
+        const answerBase = ["convert", "bits", "compl"].includes(mode) ? targetBase : base;
+        return `${mode}-${answerBase}`;
+      };
+
+      const saveStats = () => {
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(stats)); } catch (error) { /* noop */ }
+      };
+
+      const renderSavedStats = () => {
+        const keys = Object.keys(stats);
+        if (!keys.length) {
+          savedStatList.innerHTML = `<p class="solution-hint">ลงมือฝึกแล้วสถิติจะถูกบันทึกในเครื่อง</p>`;
           return;
         }
+        savedStatList.innerHTML = keys.map((key) => {
+          const entry = stats[key];
+          const [modeKey, baseKey] = key.split("-");
+          const accuracy = entry.attempts ? Math.round(entry.correct / entry.attempts * 100) : 0;
+          const label = key === "plc" ? "PLC" : `${MODE_LABELS[modeKey] || modeKey} · ฐาน ${baseKey}`;
+          return `<div class="saved-row"><span class="saved-key">${label}</span><span class="saved-val">${entry.correct}/${entry.attempts} · ${accuracy}%</span></div>`;
+        }).join("");
+      };
 
-        attempts += 1;
-        attemptsElement.textContent = attempts;
+      const recordAttempt = (correct) => {
+        const key = currentStatKey();
+        const entry = stats[key] || { correct: 0, attempts: 0 };
+        entry.attempts += 1;
+        if (correct) entry.correct += 1;
+        stats[key] = entry;
+        saveStats();
+        renderSavedStats();
+      };
 
-        if (answer.replace(/^0+(?=\d)/, "") === expected) {
-          score += 1;
-          scoreElement.textContent = score;
-          setFeedback("ถูกต้องมาก! เก่งสุด ๆ 🎉", "success");
-          renderSolution();
-          solution.classList.add("visible");
-        } else {
-          setFeedback("ยังไม่ถูก ลองทบทวนการทดแล้วลองอีกครั้งนะ", "error");
-          solution.classList.remove("visible");
-        }
+      resetStatsButton.addEventListener("click", () => {
+        Object.keys(stats).forEach((key) => delete stats[key]);
+        saveStats();
+        renderSavedStats();
+      });
+
+      showSolutionButton.addEventListener("click", () => {
+        const isVisible = solution.classList.toggle("visible");
+        if (isVisible) renderSolution();
+        showSolutionButton.textContent = isVisible ? "ซ่อนวิธีทำ" : "แสดงวิธีทำ";
+      });
+
+      document.querySelectorAll("[data-mode]").forEach((button) => {
+        button.addEventListener("click", () => {
+          mode = button.dataset.mode;
+          document.querySelectorAll("[data-mode]").forEach((item) => item.classList.toggle("active", item === button));
+          questionCount = 1;
+          updateControls();
+          createQuestion();
+          updateGuide();
+        });
+      });
+
+      document.querySelectorAll("[data-base]").forEach((button) => {
+        button.addEventListener("click", () => {
+          base = Number(button.dataset.base);
+          document.querySelectorAll("[data-base]").forEach((item) => item.classList.toggle("active", item === button));
+          questionCount = 1;
+          createQuestion();
+          updateGuide();
+        });
+      });
+
+      document.querySelectorAll("[data-target]").forEach((button) => {
+        button.addEventListener("click", () => {
+          targetBase = Number(button.dataset.target);
+          document.querySelectorAll("[data-target]").forEach((item) => item.classList.toggle("active", item === button));
+          questionCount = 1;
+          createQuestion();
+        });
+      });
+
+      document.querySelectorAll("[data-source]").forEach((button) => {
+        button.addEventListener("click", () => {
+          sourceBase = Number(button.dataset.source);
+          document.querySelectorAll("[data-source]").forEach((item) => item.classList.toggle("active", item === button));
+          questionCount = 1;
+          createQuestion();
+        });
+      });
+
+      document.querySelectorAll("[data-difficulty]").forEach((button) => {
+        button.addEventListener("click", () => {
+          difficulty = button.dataset.difficulty;
+          document.querySelectorAll("[data-difficulty]").forEach((item) => item.classList.toggle("active", item === button));
+          questionCount = 1;
+          createQuestion();
+          updateGuide();
+        });
       });
 
       newQuestionButton.addEventListener("click", () => {
@@ -579,7 +1756,184 @@
         createQuestion();
       });
 
+      const applyTheme = (theme) => {
+        document.documentElement.dataset.theme = theme;
+        themeToggle.textContent = theme === "dark" ? "ธีม: มืด" : "ธีม: สว่าง";
+      };
+
+      applyTheme(localStorage.getItem(THEME_KEY) ||
+        (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"));
+
+      themeToggle.addEventListener("click", () => {
+        const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+        localStorage.setItem(THEME_KEY, next);
+        applyTheme(next);
+      });
+
+      soundToggle.textContent = soundEnabled ? "เสียง: เปิด" : "เสียง: ปิด";
+      soundToggle.addEventListener("click", () => {
+        soundEnabled = !soundEnabled;
+        localStorage.setItem("baseLabSound", soundEnabled ? "on" : "off");
+        soundToggle.textContent = soundEnabled ? "เสียง: เปิด" : "เสียง: ปิด";
+        if (soundEnabled) playSound(true);
+      });
+
+      const buildSummary = () => {
+        const accuracy = attempts ? Math.round(score / attempts * 100) : 0;
+        summaryBody.innerHTML = [
+          { label: "ข้อที่ลอง", value: attempts },
+          { label: "ตอบถูก", value: score },
+          { label: "อัตรา", value: `${accuracy}%` },
+          { label: "Streak สูงสุด", value: bestStreak },
+          { label: "เวลารวม", value: formatTime(timerElapsedTotal) },
+          { label: "โหมดปัจจุบัน", value: MODE_LABELS[mode] }
+        ].map((item) => `<div class="summary-cell"><span>${item.label}</span><strong>${item.value}</strong></div>`).join("");
+      };
+
+      let timerElapsedTotal = 0;
+      setInterval(() => {
+        if (!document.hidden) timerElapsedTotal += 1;
+      }, 1000);
+
+      openSummaryButton.addEventListener("click", () => {
+        buildSummary();
+        summaryModal.classList.remove("hidden");
+      });
+      closeSummaryButton.addEventListener("click", () => summaryModal.classList.add("hidden"));
+      summaryModal.addEventListener("click", (event) => {
+        if (event.target === summaryModal) summaryModal.classList.add("hidden");
+      });
+
+      exportStatsButton.addEventListener("click", () => {
+        const blob = new Blob([JSON.stringify(stats, null, 2)], { type: "application/json" });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = "base-lab-stats.json";
+        link.click();
+        URL.revokeObjectURL(link.href);
+      });
+
+      importStatsButton.addEventListener("click", () => importStatsInput.click());
+      importStatsInput.addEventListener("change", () => {
+        const file = importStatsInput.files && importStatsInput.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = () => {
+          try {
+            const imported = JSON.parse(String(reader.result));
+            if (typeof imported !== "object" || imported === null) throw new Error("bad");
+            Object.entries(imported).forEach(([key, value]) => {
+              if (value && typeof value.correct === "number" && typeof value.attempts === "number") {
+                const existing = stats[key] || { correct: 0, attempts: 0 };
+                existing.correct += value.correct;
+                existing.attempts += value.attempts;
+                stats[key] = existing;
+              }
+            });
+            saveStats();
+            renderSavedStats();
+            setFeedback("นำเข้าสถิติเรียบร้อย", "success");
+          } catch (error) {
+            setFeedback("ไฟล์นำเข้าไม่ถูกต้อง", "error");
+          }
+        };
+        reader.readAsText(file);
+        importStatsInput.value = "";
+      });
+
+      const generateWorksheetLines = (count) => {
+        const lines = [];
+        const settings = digitSettings[difficulty];
+        const digitOf = (b) => (b === 2 ? settings.base2 : settings.other);
+        const maxValOf = (b) => (b ** digitOf(b)) - 1;
+        for (let index = 0; index < count; index += 1) {
+          if (mode === "add") {
+            const countTerms = difficulty === "hard" ? 3 : 2;
+            const terms = Array.from({ length: countTerms }, () => randomInt(1, maxValOf(base)));
+            lines.push(`${index + 1}) ${terms.map((n) => `${toBaseString(n, base)}${SUBSCRIPTS[base]}`).join(" + ")} = ____`);
+          } else if (mode === "sub") {
+            const maxVal = maxValOf(base);
+            const b = randomInt(0, maxVal);
+            const a = randomInt(b, maxVal);
+            lines.push(`${index + 1}) ${toBaseString(a, base)}${SUBSCRIPTS[base]} − ${toBaseString(b, base)}${SUBSCRIPTS[base]} = ____`);
+          } else if (mode === "mul") {
+            lines.push(`${index + 1}) ${toBaseString(randomInt(1, maxValOf(base)), base)}${SUBSCRIPTS[base]} × ${toBaseString(randomInt(1, maxValOf(base)), base)}${SUBSCRIPTS[base]} = ____`);
+          } else if (mode === "div") {
+            const maxVal = maxValOf(base);
+            const q = randomInt(1, maxVal);
+            const d = randomInt(2, maxVal);
+            lines.push(`${index + 1}) ${toBaseString(q * d, base)}${SUBSCRIPTS[base]} ÷ ${toBaseString(d, base)}${SUBSCRIPTS[base]} = ____`);
+          } else if (mode === "convert") {
+            const value = randomInt(1, settings.convertMax);
+            lines.push(`${index + 1}) ${toBaseString(value, sourceBase)}${SUBSCRIPTS[sourceBase]} → ฐาน ${targetBase} = ____`);
+          } else if (mode === "bits") {
+            const width = widthBits || 8;
+            const maxVal = (2 ** width) - 1;
+            const op = currentOp || "AND";
+            const [a, b] = [randomInt(1, maxVal), randomInt(1, maxVal)];
+            lines.push(`${index + 1}) ${toBaseString(a, sourceBase)}${SUBSCRIPTS[sourceBase]} ${op} ${toBaseString(b, sourceBase)}${SUBSCRIPTS[sourceBase]} = ____`);
+          } else if (mode === "compl") {
+            const width = widthBits || 8;
+            const lower = -(2 ** (width - 1));
+            const upper = (2 ** (width - 1)) - 1;
+            const value = (() => { let v = 0; do { v = randomInt(lower, upper); } while (v === 0); return v; })();
+            lines.push(`${index + 1}) 2's complement ${width} บิต ของ ${value}${SUBSCRIPTS[10]} = ____`);
+          } else {
+            const channels = [0, 1, 2, 3, 4, 5, 6, 7];
+            for (let i = channels.length - 1; i > 0; i -= 1) {
+              const j = randomInt(0, i);
+              [channels[i], channels[j]] = [channels[j], channels[i]];
+            }
+            const chosen = channels.slice(0, randomInt(1, 4)).sort((x, y) => x - y);
+            lines.push(`${index + 1}) เปิด %Q0.${chosen.join(", %Q0.")} → %QB0 = ____`);
+          }
+        }
+        return lines;
+      };
+
+      makeWorksheetButton.addEventListener("click", () => {
+        worksheetPreview.textContent = generateWorksheetLines(10).join("\n");
+        worksheetModal.classList.remove("hidden");
+      });
+      closeWorksheetButton.addEventListener("click", () => worksheetModal.classList.add("hidden"));
+      worksheetModal.addEventListener("click", (event) => {
+        if (event.target === worksheetModal) worksheetModal.classList.add("hidden");
+      });
+
+      printWorksheetButton.addEventListener("click", () => {
+        const modeName = MODE_LABELS[mode];
+        const baseName = ["convert", "bits", "compl"].includes(mode) ? `ฐาน ${targetBase}` : `ฐาน ${base}`;
+        const sourceName = mode === "convert" ? `จากฐาน ${sourceBase}` : "";
+        printArea.innerHTML = `
+          <p class="worksheet-title">แบบฝึกหัดเลขฐาน: ${modeName}${sourceName} (${baseName})</p>
+          <p class="worksheet-sub">ชื่อ-นามสกุล: ____________________  วันที่: ${new Date().toLocaleDateString("th-TH")}</p>
+          ${generateWorksheetLines(10).map((line) => `<div class="sheet-line">${line}</div>`).join("")}
+          <div style="margin-top:24px;border-top:1px solid #000;padding-top:12px;color:#555;font-size:.95rem;">หมายเหตุ: ตอบครั้งละ 1 ข้อ ใช้เลขฐานที่กำกับไว้</div>
+        `;
+        window.print();
+      });
+
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker.register("sw.js").catch(() => { /* required for PWA */ });
+        });
+      }
+
+      for (let value = 0; value <= 15; value += 1) {
+        const row = document.createElement("tr");
+        [10, 2, 8, 16].forEach((refBase) => {
+          const cell = document.createElement("td");
+          cell.textContent = refBase === 16 && value !== 0 ? "0x" + toBaseString(value, 16).toLowerCase() : toBaseString(value, refBase);
+          row.appendChild(cell);
+        });
+        refBody.appendChild(row);
+      }
+
+      updateControls();
+      updateGuide();
+      renderSavedStats();
       createQuestion();
+      updateStats();
     })();
   </script>
 </body>

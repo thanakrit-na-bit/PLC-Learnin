@@ -1,0 +1,26 @@
+{
+  "name": "Base Lab — ระบบเลขฐานครบวงจร",
+  "short_name": "Base Lab",
+  "description": "ฝึกเลขฐาน 2 8 10 16 แบบครบทุกโจทย์ พร้อมวิธีทำทีละขั้น: บวก ลบ คูณ หาร แปลงฐาน บิต 2's complement และ PLC",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#14213d",
+  "theme_color": "#14213d",
+  "lang": "th",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}
