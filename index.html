@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="แบบฝึกหัดการบวกเลขฐานสอง เรียนรู้การบวกเลขไบนารีผ่านโจทย์แบบโต้ตอบ">
+  <title>Binary Addition | แบบฝึกหัดการบวกเลขฐานสอง</title>
+  <style>
+    :root {
+      --navy: #14213d;
+      --blue: #2563eb;
+      --blue-light: #eff6ff;
+      --yellow: #fbbf24;
+      --cream: #fffaf0;
+      --ink: #172033;
+      --muted: #64748b;
+      --line: #dbe4f0;
+      --green: #15803d;
+      --green-bg: #ecfdf3;
+      --red: #b42318;
+      --red-bg: #fff1f0;
+      --shadow: 0 20px 55px rgba(20, 33, 61, 0.12);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 80% 5%, rgba(251, 191, 36, 0.19), transparent 26rem),
+        linear-gradient(180deg, #f8fbff 0%, var(--cream) 100%);
+      font-family: "Noto Sans Thai", "Leelawadee UI", Tahoma, sans-serif;
+      line-height: 1.6;
+    }
+
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .page-shell {
+      min-height: 100vh;
+      max-width: 1180px;
+      margin: auto;
+      padding: 28px 22px 56px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 56px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--navy);
+      font-weight: 800;
+      letter-spacing: .01em;
+    }
+
+    .brand-mark {
+      display: grid;
+      width: 42px;
+      height: 42px;
+      place-items: center;
+      border-radius: 13px;
+      color: var(--navy);
+      background: var(--yellow);
+      font-family: monospace;
+      font-size: 1.15rem;
+      box-shadow: 4px 4px 0 var(--navy);
+    }
+
+    .topbar-tag {
+      margin: 0;
+      color: var(--muted);
+      font-size: .9rem;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.15fr .85fr;
+      align-items: center;
+      gap: 52px;
+      margin-bottom: 48px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 0 14px;
+      color: var(--blue);
+      font-size: .8rem;
+      font-weight: 800;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      width: 24px;
+      height: 2px;
+      content: "";
+      background: var(--yellow);
+    }
+
+    h1 {
+      max-width: 680px;
+      margin: 0 0 18px;
+      color: var(--navy);
+      font-size: clamp(2.2rem, 5vw, 4.1rem);
+      line-height: 1.12;
+      letter-spacing: -.055em;
+    }
+
+    h1 span { color: var(--blue); }
+
+    .hero-copy {
+      max-width: 560px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 1.05rem;
+    }
+
+    .binary-art {
+      position: relative;
+      min-height: 260px;
+      padding: 30px;
+      overflow: hidden;
+      border-radius: 28px;
+      color: #fff;
+      background: var(--navy);
+      box-shadow: var(--shadow);
+    }
+
+    .binary-art::before,
+    .binary-art::after {
+      position: absolute;
+      border: 1px solid rgba(255, 255, 255, .12);
+      border-radius: 50%;
+      content: "";
+    }
+
+    .binary-art::before {
+      width: 230px;
+      height: 230px;
+      right: -80px;
+      bottom: -110px;
+    }
+
+    .binary-art::after {
+      width: 140px;
+      height: 140px;
+      top: -70px;
+      left: -45px;
+    }
+
+    .art-label {
+      position: relative;
+      z-index: 1;
+      margin: 0 0 24px;
+      color: #bfdbfe;
+      font-size: .9rem;
+    }
+
+    .art-equation {
+      position: relative;
+      z-index: 1;
+      margin: 0;
+      font-family: "Courier New", monospace;
+      font-size: clamp(1.7rem, 5vw, 2.8rem);
+      font-weight: 700;
+      letter-spacing: .13em;
+      line-height: 1.35;
+    }
+
+    .art-equation .answer { color: var(--yellow); }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: 1.25fr .75fr;
+      gap: 22px;
+      align-items: start;
+    }
+
+    .card {
+      border: 1px solid rgba(219, 228, 240, .9);
+      border-radius: 22px;
+      background: rgba(255, 255, 255, .88);
+      box-shadow: 0 10px 35px rgba(20, 33, 61, .06);
+    }
+
+    .practice-card { padding: 30px; }
+
+    .card-heading {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 15px;
+      margin-bottom: 22px;
+    }
+
+    h2, h3 { margin: 0; color: var(--navy); line-height: 1.25; }
+    h2 { font-size: 1.45rem; }
+    h3 { font-size: 1.1rem; }
+
+    .progress {
+      flex-shrink: 0;
+      color: var(--blue);
+      background: var(--blue-light);
+      border-radius: 999px;
+      padding: 5px 12px;
+      font-size: .83rem;
+      font-weight: 800;
+    }
+
+    .question-box {
+      margin-bottom: 24px;
+      padding: 26px 18px;
+      border-radius: 16px;
+      background: #f8fafc;
+      text-align: center;
+    }
+
+    .question-box .label {
+      margin: 0 0 12px;
+      color: var(--muted);
+      font-size: .9rem;
+    }
+
+    .question {
+      margin: 0;
+      color: var(--navy);
+      font-family: "Courier New", monospace;
+      font-size: clamp(2rem, 6vw, 3.15rem);
+      font-weight: 700;
+      letter-spacing: .18em;
+    }
+
+    .answer-area { display: flex; gap: 10px; }
+
+    .answer-input {
+      min-width: 0;
+      flex: 1;
+      border: 2px solid var(--line);
+      border-radius: 12px;
+      outline: 0;
+      padding: 12px 15px;
+      color: var(--navy);
+      background: #fff;
+      font-family: "Courier New", monospace;
+      font-size: 1.2rem;
+      letter-spacing: .12em;
+      transition: border-color .2s, box-shadow .2s;
+    }
+
+    .answer-input:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, .12);
+    }
+
+    .primary-btn, .secondary-btn {
+      border: 0;
+      border-radius: 12px;
+      padding: 12px 20px;
+      font-weight: 800;
+      transition: transform .2s, box-shadow .2s, background .2s;
+    }
+
+    .primary-btn {
+      color: #fff;
+      background: var(--blue);
+      box-shadow: 0 5px 0 #1d4ed8;
+    }
+
+    .primary-btn:hover, .secondary-btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .primary-btn:active { transform: translateY(2px); box-shadow: none; }
+
+    .secondary-btn {
+      color: var(--navy);
+      background: #eef2f7;
+    }
+
+    .feedback {
+      min-height: 28px;
+      margin: 18px 2px 0;
+      font-size: .94rem;
+      font-weight: 700;
+    }
+
+    .feedback.success { color: var(--green); }
+    .feedback.error { color: var(--red); }
+
+    .details {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid var(--line);
+    }
+
+    .score { color: var(--muted); font-size: .9rem; }
+    .score strong { color: var(--navy); font-size: 1.15rem; }
+
+    .side-column { display: grid; gap: 22px; }
+    .guide-card, .tip-card { padding: 26px; }
+    .guide-card h3, .tip-card h3 { margin-bottom: 16px; }
+
+    .guide-list {
+      display: grid;
+      gap: 12px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .guide-list li {
+      display: grid;
+      grid-template-columns: 31px 1fr;
+      gap: 10px;
+      align-items: start;
+      color: var(--muted);
+      font-size: .93rem;
+    }
+
+    .step {
+      display: grid;
+      width: 27px;
+      height: 27px;
+      place-items: center;
+      border-radius: 50%;
+      color: var(--navy);
+      background: var(--yellow);
+      font-size: .8rem;
+      font-weight: 800;
+    }
+
+    .tip-card {
+      color: #713f12;
+      border-color: #fde68a;
+      background: #fffbeb;
+    }
+
+    .tip-card p { margin: 0; font-size: .92rem; }
+    .binary { font-family: "Courier New", monospace; font-weight: 700; }
+
+    .solution {
+      display: none;
+      margin-top: 20px;
+      padding: 17px;
+      border-radius: 12px;
+      color: var(--navy);
+      background: var(--green-bg);
+      border: 1px solid #bbf7d0;
+    }
+
+    .solution.visible { display: block; }
+    .solution-title { margin: 0 0 10px; color: var(--green); font-weight: 800; }
+    .solution table { width: 100%; border-collapse: collapse; font-family: "Courier New", monospace; }
+    .solution td { padding: 4px 7px; border-bottom: 1px solid #d1fae5; }
+    .solution td:first-child { color: var(--muted); font-family: inherit; font-size: .82rem; }
+    .solution tr:last-child td { border-bottom: 0; }
+
+    footer {
+      margin-top: 50px;
+      color: var(--muted);
+      font-size: .82rem;
+      text-align: center;
+    }
+
+    @media (max-width: 820px) {
+      .hero, .workspace { grid-template-columns: 1fr; }
+      .hero { gap: 28px; }
+      .binary-art { min-height: 210px; }
+    }
+
+    @media (max-width: 520px) {
+      .page-shell { padding: 20px 15px 40px; }
+      .topbar { margin-bottom: 35px; }
+      .topbar-tag { display: none; }
+      .practice-card, .guide-card, .tip-card { padding: 21px; }
+      .answer-area { flex-direction: column; }
+      .primary-btn, .secondary-btn { width: 100%; }
+      .details { align-items: stretch; flex-direction: column; }
+      .details .secondary-btn { width: auto; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page-shell">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark">01</span>
+        <span>PLC Learning</span>
+      </div>
+      <p class="topbar-tag">เรียนรู้ทีละขั้น เข้าใจได้จริง</p>
+    </header>
+
+    <section class="hero" aria-labelledby="page-title">
+      <div>
+        <p class="eyebrow">Digital logic / lesson 01</p>
+        <h1 id="page-title">แบบฝึกหัดการบวก<br><span>เลขฐานสอง</span></h1>
+        <p class="hero-copy">ฝึกบวกเลขไบนารีให้คล่อง พร้อมเรียนรู้การทดเลขจากหลักขวาไปซ้ายอย่างเป็นขั้นตอน</p>
+      </div>
+      <div class="binary-art" aria-hidden="true">
+        <p class="art-label">ทุกบิตมีความหมาย</p>
+        <p class="art-equation">1011<br>+ 0110<br><span class="answer">= 10001</span></p>
+      </div>
+    </section>
+
+    <section class="workspace" aria-label="พื้นที่แบบฝึกหัด">
+      <article class="card practice-card">
+        <div class="card-heading">
+          <div>
+            <p class="eyebrow">Practice</p>
+            <h2>ลองทำโจทย์ข้อนี้</h2>
+          </div>
+          <span class="progress" id="questionNumber">ข้อที่ 1</span>
+        </div>
+
+        <div class="question-box">
+          <p class="label">ผลลัพธ์ของการบวกคือเท่าไร?</p>
+          <p class="question" id="question" aria-live="polite">1011 + 0110</p>
+        </div>
+
+        <form id="answerForm">
+          <label for="answer" class="sr-only">คำตอบเลขฐานสอง</label>
+          <div class="answer-area">
+            <input id="answer" class="answer-input" type="text" inputmode="numeric" maxlength="9"
+              pattern="[01]+" placeholder="พิมพ์คำตอบ เช่น 10001" autocomplete="off" aria-describedby="feedback">
+            <button class="primary-btn" type="submit">ตรวจคำตอบ</button>
+          </div>
+        </form>
+
+        <p id="feedback" class="feedback" role="status" aria-live="polite"></p>
+
+        <div id="solution" class="solution" aria-live="polite">
+          <p class="solution-title">วิธีคิดจากขวาไปซ้าย</p>
+          <table>
+            <tbody id="solutionRows"></tbody>
+          </table>
+        </div>
+
+        <div class="details">
+          <div class="score">คะแนนสะสม <strong id="score">0</strong> / <span id="attempts">0</span></div>
+          <button id="newQuestion" class="secondary-btn" type="button">สุ่มโจทย์ใหม่ ↗</button>
+        </div>
+      </article>
+
+      <aside class="side-column">
+        <section class="card guide-card">
+          <h3>หลักการบวกเลขฐานสอง</h3>
+          <ol class="guide-list">
+            <li><span class="step">1</span><span>เริ่มบวกจากหลักขวาสุดเหมือนเลขฐานสิบ</span></li>
+            <li><span class="step">2</span><span>ถ้าผลรวมเป็น 2 ให้เขียน 0 และทด 1</span></li>
+            <li><span class="step">3</span><span>นำตัวทดไปรวมกับหลักถัดไป</span></li>
+          </ol>
+        </section>
+        <section class="card tip-card">
+          <h3>จำง่าย ๆ</h3>
+          <p><span class="binary">1 + 1 = 10</span> ในเลขฐานสอง ซึ่งหมายถึง เขียน 0 และทด 1 ไปหลักถัดไป</p>
+        </section>
+      </aside>
+    </section>
+
+    <footer>ทำให้การเรียนรู้ระบบดิจิทัลเป็นเรื่องสนุกและเข้าใจง่าย</footer>
+  </main>
+
+  <script>
+    (() => {
+      const questionElement = document.querySelector("#question");
+      const answerInput = document.querySelector("#answer");
+      const answerForm = document.querySelector("#answerForm");
+      const feedback = document.querySelector("#feedback");
+      const solution = document.querySelector("#solution");
+      const solutionRows = document.querySelector("#solutionRows");
+      const questionNumber = document.querySelector("#questionNumber");
+      const scoreElement = document.querySelector("#score");
+      const attemptsElement = document.querySelector("#attempts");
+      const newQuestionButton = document.querySelector("#newQuestion");
+
+      let firstNumber = 0;
+      let secondNumber = 0;
+      let questionCount = 1;
+      let score = 0;
+      let attempts = 0;
+
+      const randomBinaryNumber = () => Math.floor(Math.random() * 15) + 1;
+      const toPaddedBinary = (number) => number.toString(2).padStart(4, "0");
+
+      const setFeedback = (message, type = "") => {
+        feedback.textContent = message;
+        feedback.className = `feedback ${type}`.trim();
+      };
+
+      const renderSolution = () => {
+        const firstBits = toPaddedBinary(firstNumber);
+        const secondBits = toPaddedBinary(secondNumber);
+        const total = firstNumber + secondNumber;
+        const totalBits = total.toString(2).padStart(5, "0");
+        let carry = 0;
+        const rows = [];
+
+        for (let index = 3; index >= 0; index -= 1) {
+          const firstBit = Number(firstBits[index]);
+          const secondBit = Number(secondBits[index]);
+          const sum = firstBit + secondBit + carry;
+          const resultBit = sum % 2;
+          const nextCarry = sum > 1 ? 1 : 0;
+          rows.push(`<tr><td>หลักที่ ${4 - index}</td><td>${firstBit} + ${secondBit}${carry ? ` + ทด ${carry}` : ""} = ${sum} → เขียน ${resultBit}${nextCarry ? " (ทด 1)" : ""}</td></tr>`);
+          carry = nextCarry;
+        }
+
+        if (carry) {
+          rows.push(`<tr><td>หลักสุดท้าย</td><td>ทด ${carry} → เขียน ${totalBits[0]}</td></tr>`);
+        }
+
+        solutionRows.innerHTML = rows.join("");
+      };
+
+      const createQuestion = () => {
+        firstNumber = randomBinaryNumber();
+        secondNumber = randomBinaryNumber();
+        questionElement.textContent = `${toPaddedBinary(firstNumber)} + ${toPaddedBinary(secondNumber)}`;
+        questionNumber.textContent = `ข้อที่ ${questionCount}`;
+        answerInput.value = "";
+        solution.classList.remove("visible");
+        setFeedback("");
+        answerInput.focus();
+      };
+
+      answerForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const answer = answerInput.value.trim();
+        const expected = (firstNumber + secondNumber).toString(2);
+
+        if (!/^[01]+$/.test(answer)) {
+          setFeedback("กรุณาพิมพ์คำตอบเป็นเลข 0 และ 1 เท่านั้น", "error");
+          return;
+        }
+
+        attempts += 1;
+        attemptsElement.textContent = attempts;
+
+        if (answer.replace(/^0+(?=\d)/, "") === expected) {
+          score += 1;
+          scoreElement.textContent = score;
+          setFeedback("ถูกต้องมาก! เก่งสุด ๆ 🎉", "success");
+          renderSolution();
+          solution.classList.add("visible");
+        } else {
+          setFeedback("ยังไม่ถูก ลองทบทวนการทดแล้วลองอีกครั้งนะ", "error");
+          solution.classList.remove("visible");
+        }
+      });
+
+      newQuestionButton.addEventListener("click", () => {
+        questionCount += 1;
+        createQuestion();
+      });
+
+      createQuestion();
+    })();
+  </script>
+</body>
+</html>
