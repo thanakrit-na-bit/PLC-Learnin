@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>เครื่องคิดเลขฐานสอง</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main class="calculator" aria-label="เครื่องคิดเลขฐานสอง">
+      <header>
+        <p class="eyebrow">BINARY CALCULATOR</p>
+        <h1>เครื่องคิดเลขฐานสอง</h1>
+        <p class="subtitle">คำนวณด้วยเลข 0 และ 1 พร้อมแสดงผลลัพธ์เป็นเลขฐานสิบ</p>
+      </header>
+
+      <section class="display" aria-live="polite">
+        <div id="expression" class="expression">0</div>
+        <div id="result" class="result">0<small>₂</small></div>
+        <div id="decimal" class="decimal">ฐานสิบ: 0</div>
+      </section>
+
+      <section class="keys" aria-label="ปุ่มเครื่องคิดเลข">
+        <button class="key function" data-action="clear">AC</button>
+        <button class="key function" data-action="backspace" aria-label="ลบตัวสุดท้าย">⌫</button>
+        <button class="key operator" data-value="/">÷</button>
+        <button class="key operator" data-value="*">×</button>
+        <button class="key digit" data-value="1">1</button>
+        <button class="key digit" data-value="0">0</button>
+        <button class="key operator" data-value="-">−</button>
+        <button class="key operator" data-value="+">+</button>
+        <button class="key equals" data-action="equals">=</button>
+      </section>
+
+      <p class="hint">รองรับ: บวก ลบ คูณ หาร · กด Enter เพื่อคำนวณ · Esc เพื่อล้าง</p>
+    </main>
+    <script src="script.js"></script>
+  </body>
+</html>

@@ -1,0 +1,74 @@
+:root {
+  color-scheme: dark;
+  --surface: #14231f;
+  --surface-light: #1d332d;
+  --line: #35574b;
+  --mint: #78f5bd;
+  --white: #effff8;
+  --muted: #aec7bb;
+  --orange: #ffb663;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  color: var(--white);
+  background: radial-gradient(circle at 20% 10%, #285c4c 0, transparent 35%), #0b1512;
+  font-family: "Noto Sans Thai", sans-serif;
+}
+
+.calculator {
+  width: min(100%, 430px);
+  padding: 28px;
+  border: 1px solid var(--line);
+  border-radius: 28px;
+  background: linear-gradient(145deg, #1d332d, var(--surface));
+  box-shadow: 0 25px 70px #0008;
+}
+
+header { margin-bottom: 24px; }
+.eyebrow { color: var(--mint); font: 600 12px "IBM Plex Mono", monospace; letter-spacing: .14em; margin: 0 0 8px; }
+h1 { font-size: clamp(25px, 7vw, 32px); margin: 0; line-height: 1.25; }
+.subtitle { color: var(--muted); font-size: 14px; margin: 7px 0 0; }
+
+.display {
+  min-height: 142px;
+  padding: 17px 19px;
+  margin-bottom: 16px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: #0d1b16;
+  text-align: right;
+  font-family: "IBM Plex Mono", monospace;
+}
+.expression { min-height: 24px; color: var(--muted); font-size: 16px; overflow-wrap: anywhere; }
+.result { color: var(--mint); font-size: clamp(34px, 10vw, 52px); font-weight: 600; line-height: 1.35; overflow-wrap: anywhere; }
+.result small { font-size: .38em; vertical-align: baseline; margin-left: 3px; }
+.decimal { color: var(--orange); font-size: 14px; }
+
+.keys { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.key {
+  min-height: 58px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  color: var(--white);
+  background: #243e35;
+  cursor: pointer;
+  font: 600 21px "IBM Plex Mono", monospace;
+  transition: transform .12s, background .12s;
+}
+.key:hover { background: #315548; }
+.key:active { transform: scale(.96); }
+.function { color: var(--orange); font-size: 16px; }
+.operator { color: var(--mint); }
+.equals { grid-column: span 4; color: #0b1512; background: var(--mint); font-size: 26px; }
+.equals:hover { background: #a1ffd3; }
+.hint { margin: 18px 2px 0; color: var(--muted); font-size: 12px; text-align: center; }
+
+@media (max-width: 380px) { .calculator { padding: 20px; border-radius: 20px; } .key { min-height: 52px; } }
