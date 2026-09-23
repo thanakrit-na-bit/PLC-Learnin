@@ -1058,6 +1058,78 @@ tbody td .dec b {
   font-weight: 700;
 }
 
+/* ---------- Members sheet ---------- */
+
+.member-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 18px;
+  margin-top: 14px;
+}
+
+.member-card {
+  position: relative;
+  padding: 22px 20px 18px;
+  border: 1px dashed var(--panel-line-strong);
+  background: rgba(9, 21, 48, 0.32);
+  text-align: center;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.member-card:hover {
+  border-color: var(--cyan);
+  box-shadow: 0 0 0 1px var(--cyan) inset, 0 0 24px rgba(56, 189, 248, 0.14);
+}
+
+.member-no {
+  position: absolute;
+  top: -11px;
+  left: 12px;
+  padding: 2px 8px;
+  border: 1px solid var(--panel-line-strong);
+  color: var(--cyan);
+  background: #0c1a38;
+  font: 600 10px var(--mono);
+  letter-spacing: 0.14em;
+}
+
+.member-avatar {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  margin: 4px auto 14px;
+  border: 2px solid var(--cyan);
+  border-radius: 50%;
+  color: var(--cyan-soft);
+  background: rgba(56, 189, 248, 0.12);
+  font: 700 30px var(--sans);
+  box-shadow: 0 0 18px rgba(56, 189, 248, 0.25);
+}
+
+.member-card h3 {
+  margin: 0;
+  color: #eaf4ff;
+  font-size: 18px;
+  line-height: 1.5;
+}
+
+.member-role {
+  margin: 8px 0 14px;
+  color: var(--ink-muted);
+  font-size: 13px;
+}
+
+.member-card code {
+  display: inline-block;
+  padding: 3px 12px;
+  border: 1px solid rgba(122, 172, 255, 0.35);
+  color: var(--cyan-soft);
+  background: rgba(56, 189, 248, 0.1);
+  font: 600 13px var(--mono);
+  letter-spacing: 0.1em;
+}
+
 /* ---------- Footer strip ---------- */
 
 .drawing-footer {

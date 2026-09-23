@@ -380,6 +380,7 @@ function switchView(view) {
   document.querySelector('#quiz-view').classList.toggle('hidden', view !== 'quiz');
   document.querySelector('#table-view').classList.toggle('hidden', view !== 'table');
   document.querySelector('#convert-view').classList.toggle('hidden', view !== 'convert');
+  document.querySelector('#members-view').classList.toggle('hidden', view !== 'members');
   if (view === 'quiz') quizNew();
   if (view === 'table') renderTable();
   if (view === 'convert') convert();

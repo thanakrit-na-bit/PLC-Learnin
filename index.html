@@ -38,6 +38,7 @@
           <button data-view="convert">⌗ CONVERT</button>
           <button data-view="quiz">▤ TEST SHEET</button>
           <button data-view="table">▱ REFERENCE</button>
+          <button data-view="members">👥 MEMBERS</button>
         </nav>
       </header>
 
@@ -111,22 +112,22 @@
             <button data-example="1A,2F,16">1A + 2F · R16</button>
           </div>
         </section>
-      </div>
 
-      <!-- ▐▐▐ SHEET 03 : ENGINEERING LOG ▐▐▐ -->
-      <section class="sheet log-sheet">
-        <div class="sheet-head"><span class="sht-no">SHT–03</span><h2>ENGINEERING LOG <span>วิธีคิดทีละหลัก &amp; ตรวจสอบ</span></h2></div>
-        <div class="log-grid">
-          <div>
-            <h3 class="block-title">STEP LOG <span>· (CARRY STEPS)</span></h3>
-            <div id="step-list"></div>
+        <!-- ▐▐▐ SHEET 03 : ENGINEERING LOG ▐▐▐ -->
+        <section class="sheet log-sheet">
+          <div class="sheet-head"><span class="sht-no">SHT–03</span><h2>ENGINEERING LOG <span>วิธีคิดทีละหลัก &amp; ตรวจสอบ</span></h2></div>
+          <div class="log-grid">
+            <div>
+              <h3 class="block-title">STEP LOG <span>· (CARRY STEPS)</span></h3>
+              <div id="step-list"></div>
+            </div>
+            <div>
+              <h3 class="block-title">CONVERSION SHEET <span>· (DECIMAL CHECK)</span></h3>
+              <div id="detail-list"></div>
+            </div>
           </div>
-          <div>
-            <h3 class="block-title">CONVERSION SHEET <span>· (DECIMAL CHECK)</span></h3>
-            <div id="detail-list"></div>
-          </div>
-        </div>
-      </section>
+        </section>
+      </div>
 
       <!-- ▐▐▐ CONVERTER SHEET ▐▐▐ -->
       <section id="convert-view" class="sheet hidden">
@@ -244,6 +245,36 @@
             </thead>
             <tbody id="conversion-rows"></tbody>
           </table>
+        </div>
+      </section>
+
+      <!-- ▐▐▐ MEMBERS SHEET ▐▐▐ -->
+      <section id="members-view" class="sheet hidden">
+        <div class="sheet-head"><span class="sht-no">MEM–01</span><h2>สมาชิกผู้จัดทำ <span>(MEMBERS)</span></h2></div>
+        <p class="view-intro">รายชื่อสมาชิกของโครงงาน ระบบคำนวณเลขฐาน · BASE ADDER</p>
+
+        <div class="member-grid">
+          <article class="member-card">
+            <span class="member-no">MEM–01</span>
+            <div class="member-avatar">ก</div>
+            <h3>น.ส.กัญจนพร<br />กระจาดแก้ว</h3>
+            <p class="member-role">ผู้จัดทำ</p>
+            <code>005-0</code>
+          </article>
+          <article class="member-card">
+            <span class="member-no">MEM–02</span>
+            <div class="member-avatar">พ</div>
+            <h3>นายพรรษนันท์<br />เปี่ยมยานนท์</h3>
+            <p class="member-role">ผู้จัดทำ</p>
+            <code>002-7</code>
+          </article>
+          <article class="member-card">
+            <span class="member-no">MEM–03</span>
+            <div class="member-avatar">ธ</div>
+            <h3>นายธนกฤต<br />ณ. พัทลุง</h3>
+            <p class="member-role">ผู้จัดทำ</p>
+            <code>006-8</code>
+          </article>
         </div>
       </section>
 
